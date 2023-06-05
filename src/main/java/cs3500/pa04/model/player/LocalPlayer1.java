@@ -17,13 +17,13 @@ import kyle.pa03.model.Ship;
 import kyle.pa03.model.ShipType;
 
 /**
- * A abstract local player.
+ * An abstract local player.
  */
 public abstract class LocalPlayer1 implements Player {
   protected final BoardObserver observer;
   protected PlayerBoard playerBoard;
   protected GuessBoard opponentBoard;
-  protected List<Coord> salvo;
+  protected List<Coord> lastTurnShots;
   private final Random random;
 
   /**
@@ -44,7 +44,7 @@ public abstract class LocalPlayer1 implements Player {
   public LocalPlayer(BoardObserver observer, Random random) {
     this.random = random;
     this.observer = observer;
-    this.salvo = new ArrayList<>();
+    this.lastTurnShots = new ArrayList<>();
   }
 
   @Override
@@ -121,14 +121,14 @@ public abstract class LocalPlayer1 implements Player {
 
   @Override
   public List<Coord> takeShots() {
-    loadShots();
-    return new ArrayList<>(salvo);
+    lastTurnShots.addAll(loadShots());
+    return lastTurnShots;
   }
 
   /**
    * Loads salvo with shots to shoot when takeShots is called.
    */
-  protected abstract void loadShots();
+  protected abstract List<Coord> loadShots();
 
   @Override
   public List<Coord> reportDamage(List<Coord> opponentShotsOnBoard) {
@@ -146,11 +146,11 @@ public abstract class LocalPlayer1 implements Player {
     for (Coord hit : shotsThatHitOpponentShips) {
       opponentBoard.hit(hit);
     }
-    salvo.removeAll(shotsThatHitOpponentShips);
-    for (Coord miss : salvo) {
+    lastTurnShots.removeAll(shotsThatHitOpponentShips);
+    for (Coord miss : lastTurnShots) {
       opponentBoard.miss(miss);
     }
-    salvo.clear();
+    lastTurnShots.clear();
   }
 
   @Override

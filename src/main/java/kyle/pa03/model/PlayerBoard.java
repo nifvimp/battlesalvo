@@ -33,14 +33,17 @@ public class PlayerBoard extends AbstractBoard {
 
   @Override
   protected char translateCoord(Coord coord) {
+    if (!ships.contains(shipPlacement.get(coord))) {
+      return 'S';
+    }
     if (hits.contains(coord)) {
       return 'H';
     } else if (misses.contains(coord)) {
-      return 'M';
+      return 'X';
     } else if (shipPlacement.get(coord) != null) {
       return shipPlacement.get(coord).shipType().getShortForm();
     } else {
-      return '-';
+      return '~';
     }
   }
 

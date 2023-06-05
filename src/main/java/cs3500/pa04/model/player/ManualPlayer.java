@@ -40,12 +40,11 @@ public class ManualPlayer extends LocalPlayer {
     this.input = input;
   }
 
-  @Override
-  protected void loadShots() {
+  protected List<Coord> loadShots() {
     int numShots = Math.min(playerBoard.shipsLeft(), playerBoard.validShots().size());
     List<Coord> shots = input.requestShots(numShots);
     if (opponentBoard.validShots().containsAll(shots)) {
-      salvo.addAll(shots);
+      return shots;
     } else {
       input.signalInvalidShots();
       loadShots();

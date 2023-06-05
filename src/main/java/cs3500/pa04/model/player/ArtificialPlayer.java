@@ -37,9 +37,7 @@ public class ArtificialPlayer extends LocalPlayer {
     super(observer, random);
     this.random = random;
   }
-
-  @Override
-  protected void loadShots() {
+  protected List<Coord> loadShots() {
     List<Coord> shots = new ArrayList<>();
     List<Coord> validShots = new ArrayList<>(opponentBoard.validShots());
     for (int i = 0; i < playerBoard.shipsLeft() && validShots.size() > 0; i++) {
@@ -48,6 +46,6 @@ public class ArtificialPlayer extends LocalPlayer {
       validShots.remove(randomShot);
     }
     // TODO: fix up to be better
-    salvo.addAll(shots);
+    return shots;
   }
 }
