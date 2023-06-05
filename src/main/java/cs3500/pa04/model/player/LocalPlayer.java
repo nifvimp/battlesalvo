@@ -1,15 +1,15 @@
 package cs3500.pa04.model.player;
 
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.Player;
+import cs3500.pa04.model.board.Board;
+import cs3500.pa04.model.board.Ship;
+import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import tucker.pa03.model.Board;
-import tucker.pa03.model.Coord;
-import tucker.pa03.model.Player;
-import tucker.pa03.model.Ship;
-import tucker.pa03.model.ShipType;
 
 /**
  * Abstract class for a local player.

@@ -1,11 +1,10 @@
 package cs3500.pa04.model.player;
 
-import cs3500.pa03.controller.InputCollector;
+import cs3500.pa04.controller.InputCollector;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
 import java.util.List;
 import java.util.Random;
-import tucker.pa03.model.Coord;
-import tucker.pa03.model.GameResult;
-import tucker.pa03.model.LocalPlayer;
 
 /**
  * A local player of BattleSalvo, controlled by a human.

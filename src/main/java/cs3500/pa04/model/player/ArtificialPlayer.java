@@ -1,15 +1,15 @@
 package cs3500.pa04.model.player;
 
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import kyle.pa03.model.BoardObserver;
-import kyle.pa03.model.Coord;
 
 /**
  * A local player of BattleSalvo, controlled by an advanced AI.
  */
-public class ArtificialPlayer extends LocalPlayer {
+public class ArtificialPlayer extends LocalPlayer1 {
   private final Random random;
 
   @Override

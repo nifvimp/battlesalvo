@@ -1,7 +1,8 @@
 package cs3500.pa04.model.board;
 
+
+import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.ShipType;
-import tucker.pa03.model.Coord;
 
 /**
  * Represents one ship on the board.

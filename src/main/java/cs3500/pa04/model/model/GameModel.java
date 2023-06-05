@@ -1,8 +1,8 @@
 package cs3500.pa04.model.model;
 
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.ShipType;
 import java.util.Map;
-import kyle.pa03.model.GameResult;
-import kyle.pa03.model.ShipType;
 
 /**
  * Model of a battle salvo game.

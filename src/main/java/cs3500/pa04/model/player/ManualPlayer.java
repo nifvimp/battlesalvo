@@ -1,15 +1,15 @@
 package cs3500.pa04.model.player;
 
-import cs3500.pa03.controller.UserRequester;
+import cs3500.pa04.controller.UserRequester;
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
 import java.util.List;
 import java.util.Random;
-import kyle.pa03.model.BoardObserver;
-import kyle.pa03.model.Coord;
 
 /**
  * A manual player.
  */
-public class ManualPlayer extends LocalPlayer {
+public class ManualPlayer extends LocalPlayer1 {
   private final UserRequester input;
 
   @Override
@@ -47,7 +47,7 @@ public class ManualPlayer extends LocalPlayer {
       return shots;
     } else {
       input.signalInvalidShots();
-      loadShots();
+      return loadShots();
     }
   }
 }

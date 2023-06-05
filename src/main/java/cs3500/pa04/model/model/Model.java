@@ -1,12 +1,12 @@
 package cs3500.pa04.model.model;
 
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.Player;
+import cs3500.pa04.model.ShipType;
+import cs3500.pa04.model.player.LocalPlayer;
 import java.util.List;
 import java.util.Map;
-import tucker.pa03.model.Coord;
-import tucker.pa03.model.GameResult;
-import tucker.pa03.model.LocalPlayer;
-import tucker.pa03.model.Player;
-import tucker.pa03.model.ShipType;
 
 /**
  * Represents the game model for a game of Battleship.
@@ -69,7 +69,7 @@ public class Model {
    */
   public void endGame(GameResult gameResult, String reason) {
     userPlayer.endGame(gameResult, reason);
-    opponentPlayer.endGame(gameResult == GameResult.WIN ? GameResult.LOSS :
-        gameResult == GameResult.LOSS ? GameResult.WIN : GameResult.TIE, reason);
+    opponentPlayer.endGame(gameResult == GameResult.WIN ? GameResult.LOSE :
+        gameResult == GameResult.LOSE ? GameResult.WIN : GameResult.TIE, reason);
   }
 }

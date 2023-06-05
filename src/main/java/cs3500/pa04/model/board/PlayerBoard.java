@@ -1,19 +1,17 @@
 package cs3500.pa04.model.board;
 
+import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kyle.pa03.model.AbstractBoard;
-import kyle.pa03.model.Coord;
-import kyle.pa03.model.Ship;
 
 /**
  * The game board of a player.
  */
 public class PlayerBoard extends AbstractBoard {
-  private final List<kyle.pa03.model.Ship> ships;
-  private final Map<kyle.pa03.model.Coord, kyle.pa03.model.Ship> shipPlacement;
+  private final List<Ship1> ships;
+  private final Map<Coord, Ship1> shipPlacement;
 
   /**
    * Creates a new player board.
@@ -23,25 +21,25 @@ public class PlayerBoard extends AbstractBoard {
    * @param hitsToWin number of distinct hits to win the game
    * @param ships     ships to place on the board
    */
-  public PlayerBoard(int height, int width, int hitsToWin, List<kyle.pa03.model.Ship> ships) {
+  public PlayerBoard(int height, int width, int hitsToWin, List<Ship1> ships) {
     super(height, width, hitsToWin);
     this.ships = new ArrayList<>(ships);
     shipPlacement = new HashMap<>();
-    for (kyle.pa03.model.Ship ship : ships) {
-      for (kyle.pa03.model.Coord coord : ship.getOccupied()) {
+    for (Ship1 ship : ships) {
+      for (Coord coord : ship.getOccupied()) {
         shipPlacement.put(coord, ship);
       }
     }
   }
 
   @Override
-  protected char translateCoord(kyle.pa03.model.Coord coord) {
+  protected char translateCoord(Coord coord) {
     if (hits.contains(coord)) {
       return 'H';
     } else if (misses.contains(coord)) {
       return 'M';
     } else if (shipPlacement.get(coord) != null) {
-      return shipPlacement.get(coord).shipType().getShortForm();
+      return shipPlacement.get(coord).shipType().getCharacter();
     } else {
       return '-';
     }
@@ -80,8 +78,8 @@ public class PlayerBoard extends AbstractBoard {
    * Removes ships from the ship list that have sunk.
    */
   private void updateShips() {
-    List<kyle.pa03.model.Ship> toRemove = new ArrayList<>();
-    for (Ship ship : ships) {
+    List<Ship1> toRemove = new ArrayList<>();
+    for (Ship1 ship : ships) {
       if (hits.containsAll(ship.getOccupied())) {
         toRemove.add(ship);
       }

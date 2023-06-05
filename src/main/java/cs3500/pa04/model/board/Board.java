@@ -1,19 +1,18 @@
 package cs3500.pa04.model.board;
 
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import tucker.pa03.model.Coord;
-import tucker.pa03.model.Ship;
-import tucker.pa03.model.ShipType;
 
 /**
  * One player's board in BattleSalvo. Tracks both their ships and the shots on the opponent.
  */
 public class Board {
-  private final tucker.pa03.model.Ship[][] shipBoard;
+  private final Ship[][] shipBoard;
   private final Boolean[][] shotResultBoard;
 
   private final boolean[][] opponentMissesBoard;
@@ -30,7 +29,7 @@ public class Board {
    * @param width  the width of the board
    */
   public Board(int height, int width) {
-    shipBoard = new tucker.pa03.model.Ship[height][width];
+    shipBoard = new Ship[height][width];
     shotResultBoard = new Boolean[height][width];
     opponentMissesBoard = new boolean[height][width];
     this.width = width;
@@ -44,14 +43,14 @@ public class Board {
    * @param random the Random object for generating the board
    * @return a list of the ships placed
    */
-  public List<tucker.pa03.model.Ship> placeShips(Map<tucker.pa03.model.ShipType, Integer> specifications, Random random) {
+  public List<Ship> placeShips(Map<ShipType, Integer> specifications, Random random) {
     //Keeps trying to place ships until successful
     while (true) {
       try {
-        ArrayList<tucker.pa03.model.Ship> placedShips = new ArrayList<>();
-        List<tucker.pa03.model.ShipType> types = new ArrayList<>(specifications.keySet().stream().toList());
+        ArrayList<Ship> placedShips = new ArrayList<>();
+        List<ShipType> types = new ArrayList<>(specifications.keySet().stream().toList());
         Collections.sort(types);
-        for (tucker.pa03.model.ShipType type : types) {
+        for (ShipType type : types) {
           for (int i = 0; i < specifications.get(type); i++) {
             placedShips.add(placeShipRandomly(type, random));
           }
@@ -69,7 +68,7 @@ public class Board {
    * @param coord the coordinate of the board to get from
    * @return the Ship if one is present, if none are returns null
    */
-  public tucker.pa03.model.Ship getLocation(tucker.pa03.model.Coord coord) {
+  public Ship getLocation(Coord coord) {
     return shipBoard[coord.y()][coord.x()];
   }
 
@@ -83,8 +82,8 @@ public class Board {
     char[][] boardRepresentation = new char[height][width];
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        tucker.pa03.model.Coord coord = new tucker.pa03.model.Coord(j, i);
-        tucker.pa03.model.Ship ship = getLocation(coord);
+        Coord coord = new Coord(j, i);
+        Ship ship = getLocation(coord);
         if (ship == null) {
           boardRepresentation[i][j] = opponentMissesBoard[i][j] ? 'X' : '~';
         } else {
@@ -113,7 +112,7 @@ public class Board {
    * @param coord the coordinate to mark on the board
    * @param hit   whether the shot hit or missed
    */
-  public void placeShotResult(tucker.pa03.model.Coord coord, boolean hit) {
+  public void placeShotResult(Coord coord, boolean hit) {
     if (shotResultBoard[coord.y()][coord.x()] == null) {
       shotResultBoard[coord.y()][coord.x()] = hit;
     }
@@ -124,7 +123,7 @@ public class Board {
    *
    * @param coord the coord to mark
    */
-  public void placeOpponentMiss(tucker.pa03.model.Coord coord) {
+  public void placeOpponentMiss(Coord coord) {
     opponentMissesBoard[coord.y()][coord.x()] = true;
   }
 
@@ -134,14 +133,14 @@ public class Board {
    * @param type the type of ship to create
    * @return the placed ship
    */
-  private tucker.pa03.model.Ship placeShipRandomly(ShipType type, Random random) {
-    tucker.pa03.model.Coord coord;
+  private Ship placeShipRandomly(ShipType type, Random random) {
+    Coord coord;
     boolean vertical;
     do {
       vertical = random.nextBoolean();
-      coord = new tucker.pa03.model.Coord(random.nextInt(0, width), random.nextInt(0, height));
+      coord = new Coord(random.nextInt(0, width), random.nextInt(0, height));
     } while (!canFit(coord, type.getSize(), vertical));
-    tucker.pa03.model.Ship ship = new Ship(type, coord);
+    Ship ship = new Ship(type, coord);
     for (int i = 0; i < type.getSize(); i++) {
       if (vertical) {
         shipBoard[i + coord.y()][coord.x()] = ship;

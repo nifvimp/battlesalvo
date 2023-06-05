@@ -1,12 +1,12 @@
 package cs3500.pa04.model.model;
 
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.Player;
+import cs3500.pa04.model.ShipType;
 import java.util.List;
 import java.util.Map;
-import kyle.pa03.model.BoardObserver;
-import kyle.pa03.model.Coord;
-import kyle.pa03.model.GameResult;
-import kyle.pa03.model.Player;
-import kyle.pa03.model.ShipType;
 
 /**
  * Implementation of a Battle Salvo game model.

@@ -1,5 +1,13 @@
 package cs3500.pa04.model.player;
 
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.Player1;
+import cs3500.pa04.model.ShipType;
+import cs3500.pa04.model.board.GuessBoard;
+import cs3500.pa04.model.board.PlayerBoard;
+import cs3500.pa04.model.board.Ship1;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -7,23 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import kyle.pa03.model.BoardObserver;
-import kyle.pa03.model.Coord;
-import kyle.pa03.model.GameResult;
-import kyle.pa03.model.GuessBoard;
-import kyle.pa03.model.Player;
-import kyle.pa03.model.PlayerBoard;
-import kyle.pa03.model.Ship;
-import kyle.pa03.model.ShipType;
 
 /**
  * An abstract local player.
  */
-public abstract class LocalPlayer1 implements Player {
+public abstract class LocalPlayer1 implements Player1 {
   protected final BoardObserver observer;
   protected PlayerBoard playerBoard;
   protected GuessBoard opponentBoard;
-  protected List<Coord> lastTurnShots;
+  private List<Coord> lastTurnShots;
   private final Random random;
 
   /**
@@ -31,7 +31,7 @@ public abstract class LocalPlayer1 implements Player {
    *
    * @param observer observer of the game
    */
-  public LocalPlayer(BoardObserver observer) {
+  public LocalPlayer1(BoardObserver observer) {
     this(observer, new Random());
   }
 
@@ -41,15 +41,15 @@ public abstract class LocalPlayer1 implements Player {
    * @param observer observer of the game
    * @param random   random to randomize by
    */
-  public LocalPlayer(BoardObserver observer, Random random) {
+  public LocalPlayer1(BoardObserver observer, Random random) {
     this.random = random;
     this.observer = observer;
     this.lastTurnShots = new ArrayList<>();
   }
 
   @Override
-  public List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications) {
-    List<Ship> ships = new ArrayList<>();
+  public List<Ship1> setup(int height, int width, Map<ShipType, Integer> specifications) {
+    List<Ship1> ships = new ArrayList<>();
     List<ShipType> shipsToPlace = new ArrayList<>();
     for (ShipType shipType : specifications.keySet()) {
       for (int i = 0; i < specifications.get(shipType); i++) {
@@ -97,9 +97,9 @@ public abstract class LocalPlayer1 implements Player {
    * @param ships    list of ships to add to
    * @return true if the random ship placement was successful
    */
-  private boolean placeShip(ShipType shipType, int height, int width, List<Ship> ships) {
+  private boolean placeShip(ShipType shipType, int height, int width, List<Ship1> ships) {
     Set<Coord> illegal = new HashSet<>();
-    for (Ship ship : ships) {
+    for (Ship1 ship : ships) {
       illegal.addAll(ship.getOccupied());
     }
     int tries = 0;
@@ -108,7 +108,7 @@ public abstract class LocalPlayer1 implements Player {
       boolean vertical = random.nextBoolean();
       int x = (int) (random.nextDouble() * (width - ((vertical) ? 0 : shipType.getSize())));
       int y = (int) (random.nextDouble() * (height - ((vertical) ? shipType.getSize() : 0)));
-      Ship newShip = new Ship(shipType, vertical, new Coord(x, y));
+      Ship1 newShip = new Ship1(shipType, vertical, new Coord(x, y));
       if (newShip.getOccupied().stream().noneMatch(illegal::contains)) {
         ships.add(newShip);
         placed = true;

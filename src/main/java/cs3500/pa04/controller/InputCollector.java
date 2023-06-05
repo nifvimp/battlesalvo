@@ -1,8 +1,9 @@
 package cs3500.pa04.controller;
 
-import cs3500.pa03.model.Coord;
-import cs3500.pa03.model.ShipType;
-import cs3500.pa03.view.View;
+
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.ShipType;
+import cs3500.pa04.view.GameView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,14 +14,14 @@ import java.util.Map;
  * Collects input from the user when requested.
  */
 public class InputCollector {
-  private final View view;
+  private final GameView view;
 
   /**
    * Constructor for InputCollector.
    *
    * @param view the view to fetch input from
    */
-  public InputCollector(View view) {
+  public InputCollector(GameView view) {
     this.view = view;
   }
 
@@ -38,7 +39,7 @@ public class InputCollector {
     while (!((width >= minDimensions && width <= maxDimensions)
         && ((height >= minDimensions && height <= maxDimensions)))) {
       try {
-        String input = view.getParameters(retry);
+        String input = view.getBoardDimensions(new Coord(6, 15));
         retry = true;
         int[] nums = numExtractor(2, input);
         width = nums[0];
@@ -84,7 +85,7 @@ public class InputCollector {
     while (!(Arrays.stream(ships).sum() <= maxFleetSize
         && Arrays.stream(ships).allMatch(i -> i > 0))) {
       try {
-        String input = view.getFleet(retry, maxFleetSize);
+        String input = view.getFleet(maxFleetSize);
         retry = true;
         ships = numExtractor(4, input);
       } catch (Exception ignored) {
@@ -115,7 +116,7 @@ public class InputCollector {
     while (!shotsCollected) {
       shotsCollected = true;
       shots = new ArrayList<>();
-      view.promptShots(numShots, retry);
+      view.promptShots(numShots);
       retry = true;
       for (int i = 0; i < numShots; i++) {
         try {
@@ -138,5 +139,4 @@ public class InputCollector {
     }
     return shots;
   }
-
 }

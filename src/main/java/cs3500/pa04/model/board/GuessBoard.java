@@ -1,7 +1,7 @@
 package cs3500.pa04.model.board;
 
-import kyle.pa03.model.AbstractBoard;
-import kyle.pa03.model.Coord;
+
+import cs3500.pa04.model.Coord;
 
 /**
  * A board that represents what a player knows about their opponent's board.
@@ -19,7 +19,7 @@ public class GuessBoard extends AbstractBoard {
   }
 
   @Override
-  protected char translateCoord(kyle.pa03.model.Coord coord) {
+  protected char translateCoord(Coord coord) {
     if (hits.contains(coord)) {
       return 'H';
     } else if (misses.contains(coord)) {
@@ -34,7 +34,7 @@ public class GuessBoard extends AbstractBoard {
    *
    * @param coord position to mark
    */
-  public void hit(kyle.pa03.model.Coord coord) {
+  public void hit(Coord coord) {
     shotsLeft.remove(coord);
     hits.add(coord);
   }

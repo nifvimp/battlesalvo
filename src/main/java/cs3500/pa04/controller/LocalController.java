@@ -1,16 +1,14 @@
 package cs3500.pa04.controller;
 
-import cs3500.pa03.model.BoardObserver;
-import cs3500.pa03.model.Coord;
-import cs3500.pa03.model.GameModel;
-import cs3500.pa03.model.GameModelImpl;
-import cs3500.pa03.model.GameResult;
-import cs3500.pa03.model.Player;
-import cs3500.pa03.model.ShipType;
-import cs3500.pa03.view.GameView;
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.Player;
+import cs3500.pa04.model.ShipType;
+import cs3500.pa04.model.model.GameModel;
+import cs3500.pa04.model.model.GameModelImpl;
+import cs3500.pa04.view.GameView;
 import java.util.Map;
-import kyle.pa03.controller.Controller;
-import kyle.pa03.controller.UserRequester;
 
 /**
  * The controller for a Battle Salvo game that hosted locally on the computer that is
@@ -19,7 +17,7 @@ import kyle.pa03.controller.UserRequester;
 public class LocalController implements Controller {
   private final GameView view;
   private final GameModel model;
-  private final kyle.pa03.controller.UserRequester requester;
+  private final UserRequester requester;
 
   /**
    * Makes a new local battle salvo controller.

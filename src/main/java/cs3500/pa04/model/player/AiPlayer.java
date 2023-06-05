@@ -1,13 +1,12 @@
 package cs3500.pa04.model.player;
 
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
-import tucker.pa03.model.Coord;
-import tucker.pa03.model.GameResult;
-import tucker.pa03.model.LocalPlayer;
 
 /**
  * A local player of BattleSalvo, controlled by an advanced AI.

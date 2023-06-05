@@ -1,8 +1,9 @@
 package cs3500.pa04.controller;
 
-import cs3500.pa03.model.Coord;
-import cs3500.pa03.model.ShipType;
-import cs3500.pa03.view.GameView;
+
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.ShipType;
+import cs3500.pa04.view.GameView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,19 +35,16 @@ public class UserRequester {
   public Coord requestBoardSize() {
     Coord size;
     try {
-      String[] input = view.getBoardSize().split(" ");
-      if (input.length != 2) {
-        throw new IllegalArgumentException("Incorrect number of inputs.");
-      }
-      int width = Integer.parseInt(input[0]);
-      int height = Integer.parseInt(input[1]);
-      if (width < BOARD_LIMITS.x() || width > BOARD_LIMITS.y() || height < BOARD_LIMITS.x()
-          || height > BOARD_LIMITS.y()) {
+      int[] input = numExtractor(2, view.getBoardDimensions(BOARD_LIMITS));
+      int width = input[0];
+      int height = input[1];
+      if (width < BOARD_LIMITS.x() || width > BOARD_LIMITS.y()
+          || height < BOARD_LIMITS.x() || height > BOARD_LIMITS.y()) {
         throw new IllegalArgumentException("Dimensions are invalid.");
       }
       size = new Coord(width, height);
     } catch (IllegalArgumentException e) {
-      view.invalidBoardSize(BOARD_LIMITS);
+      view.invalidBoardDimensions(BOARD_LIMITS);
       size = requestBoardSize();
     }
     return size;
@@ -61,26 +59,19 @@ public class UserRequester {
   public Map<ShipType, Integer> requestFleet(int fleetSize) {
     Map<ShipType, Integer> specification = new HashMap<>();
     try {
-      String[] input = view.getFleet().split(" ");
       ShipType[] shipTypes = ShipType.values();
-      if (input.length != shipTypes.length) {
-        throw new IllegalArgumentException();
-      }
+      int[] input = numExtractor(shipTypes.length, view.getFleet(fleetSize));
       int currSize = 0;
       for (int i = 0; i < shipTypes.length; i++) {
-        int numShips = Integer.parseInt(input[i]);
-        if (numShips <= 0) {
-          throw new IllegalArgumentException();
-        }
-        currSize += numShips;
-        specification.put(shipTypes[i], numShips);
+        specification.put(shipTypes[i], input[i]);
+        currSize += input[i];
       }
       if (currSize > fleetSize) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Current Fleet size exceeds the max fleet size.");
       }
     } catch (IllegalArgumentException e) {
-      view.invalidFleet(fleetSize);
-      specification = requestFleet(fleetSize);
+      view.invalidFleet();
+      return requestFleet(fleetSize);
     }
     return specification;
   }
@@ -93,16 +84,13 @@ public class UserRequester {
    */
   public List<Coord> requestShots(int numShots) {
     Set<Coord> shots = new HashSet<>(numShots);
-    List<String> input = view.getShots(numShots);
+    view.promptShots(numShots);
     try {
-      for (String str : input) {
-        String[] toParse = str.trim().split(" ");
-        if (toParse.length != 2) {
-          throw new IllegalArgumentException("Input was formatted incorrectly");
-        }
-        int width = Integer.parseInt(toParse[0]);
-        int height = Integer.parseInt(toParse[1]);
-        if (!shots.add(new Coord(width, height))) {
+      for (int i = 0; i < numShots; i++) {
+        int[] input = numExtractor(2, view.getShot());
+        int x = input[0];
+        int y = input[1];
+        if (!shots.add(new Coord(x, y))) {
           throw new IllegalArgumentException("Shot has already been entered.");
         }
       }
@@ -118,5 +106,28 @@ public class UserRequester {
    */
   public void signalInvalidShots() {
     view.invalidShots();
+  }
+
+  /**
+   * Extracts the specified number of integers from the given text.
+   *
+   * @param numsToExtract the number of integers to extract
+   * @param text          the text containing the integers
+   * @return an array containing the specified number of extracted integers
+   * @throws IllegalArgumentException if there are more inputs than expected
+   *                                  or if there is a problem extracting
+   */
+  private int[] numExtractor(int numsToExtract, String text) {
+    text = text.trim();
+    String[] split = text.split(" ");
+    if (split.length > numsToExtract) {
+      throw new IllegalArgumentException("more inputs than expected");
+    }
+    int[] nums = new int[numsToExtract];
+    for (int i = 0; i < nums.length; i++) {
+      int num = Integer.parseInt(split[i]);
+      nums[i] = num;
+    }
+    return nums;
   }
 }

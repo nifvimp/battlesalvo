@@ -1,8 +1,8 @@
 package cs3500.pa04.model;
 
+import cs3500.pa04.model.board.AbstractBoard;
 import java.util.HashMap;
 import java.util.Map;
-import kyle.pa03.model.AbstractBoard;
 
 /**
  * Observer of the boards in a game.

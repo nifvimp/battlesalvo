@@ -1,18 +1,18 @@
 package cs3500.pa04.model.board;
 
+import cs3500.pa04.model.Coord;
 import java.util.HashSet;
 import java.util.Set;
-import kyle.pa03.model.Coord;
 
 /**
  * An abstract Battle Salvo game board.
  */
 public abstract class AbstractBoard {
-  protected final Set<kyle.pa03.model.Coord> hits;
-  protected final Set<kyle.pa03.model.Coord> misses;
-  protected final Set<kyle.pa03.model.Coord> shotsLeft;
+  protected final Set<Coord> hits;
+  protected final Set<Coord> misses;
+  protected final Set<Coord> shotsLeft;
   private final int hitsToWin;
-  private final kyle.pa03.model.Coord[][] board;
+  private final Coord[][] board;
 
   /**
    * Creates an abstract battle salvo game board.
@@ -22,14 +22,14 @@ public abstract class AbstractBoard {
    * @param hitsToWin number of distinct hits required to win the game
    */
   protected AbstractBoard(int height, int width, int hitsToWin) {
-    this.board = new kyle.pa03.model.Coord[height][width];
+    this.board = new Coord[height][width];
     this.hitsToWin = hitsToWin;
     this.shotsLeft = new HashSet<>();
     this.hits = new HashSet<>();
     this.misses = new HashSet<>();
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        board[i][j] = new kyle.pa03.model.Coord(j, i);
+        board[i][j] = new Coord(j, i);
         shotsLeft.add(board[i][j]);
       }
     }
@@ -58,7 +58,7 @@ public abstract class AbstractBoard {
    * @param coord coord to translate
    * @return character representation of coord on the board
    */
-  protected abstract char translateCoord(kyle.pa03.model.Coord coord);
+  protected abstract char translateCoord(Coord coord);
 
   /**
    * Gets the available shots left on the board.

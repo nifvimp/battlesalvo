@@ -1,25 +1,23 @@
 package cs3500.pa04.controller;
 
-import cs3500.pa03.model.AiPlayer;
-import cs3500.pa03.model.Coord;
-import cs3500.pa03.model.GameResult;
-import cs3500.pa03.model.HumanPlayer;
-import cs3500.pa03.model.LocalPlayer;
-import cs3500.pa03.model.Model;
-import cs3500.pa03.model.Player;
-import cs3500.pa03.view.TerminalView;
-import cs3500.pa03.view.View;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.model.Model;
+import cs3500.pa04.model.Player;
+import cs3500.pa04.model.player.AiPlayer;
+import cs3500.pa04.model.player.HumanPlayer;
+import cs3500.pa04.model.player.LocalPlayer;
+import cs3500.pa04.view.GameView;
+import cs3500.pa04.view.TerminalView;
 import java.io.PrintStream;
 import java.util.Random;
-import tucker.pa03.controller.Controller;
-import tucker.pa03.controller.InputCollector;
 
 /**
  * Manages a single local game of Battleship.
  */
 public class LocalGameController implements Controller {
   private final Model model;
-  private final View view;
+  private final GameView view;
 
   private static final int MIN_DIMENSIONS = 6;
   private static final int MAX_DIMENSIONS = 15;
@@ -47,8 +45,8 @@ public class LocalGameController implements Controller {
    */
 
   public LocalGameController(Readable input, PrintStream output, Random random1, Random random2) {
-    view = new TerminalView(input, output);
-    tucker.pa03.controller.InputCollector inputCollector = new InputCollector(view);
+    view = new TerminalView(output, input);
+    InputCollector inputCollector = new InputCollector(view);
     LocalPlayer userPlayer = new HumanPlayer(didUserLost, random1, inputCollector);
     Player opponentPlayer = new AiPlayer(didOpponentLose, random2);
     //LocalPlayer userPlayer = new AiPlayer(didUserLost, random1);
@@ -63,12 +61,12 @@ public class LocalGameController implements Controller {
    * Displays the game state, passes the shots between both players, checks if the game is over.
    */
   public void run() {
-    view.showShotBoard(model.getUserShotsFired());
-    view.showBoard(model.getUserBoard());
+    view.displayOpponentBoard(model.getUserShotsFired());
+    view.displayPlayerBoard(model.getUserBoard());
     do {
       model.salvo();
-      view.showShotBoard(model.getUserShotsFired());
-      view.showBoard(model.getUserBoard());
+      view.displayOpponentBoard(model.getUserShotsFired());
+      view.displayPlayerBoard(model.getUserBoard());
       checkGameOver();
     } while (!gameOver);
   }
@@ -82,7 +80,7 @@ public class LocalGameController implements Controller {
   private void endGame(GameResult gameResult, String reason) {
     gameOver = true;
     model.endGame(gameResult, reason);
-    view.endGame(gameResult, reason);
+    view.showResults(gameResult, reason);
   }
 
   /**
@@ -99,7 +97,7 @@ public class LocalGameController implements Controller {
         gameResult = GameResult.WIN;
         reason = "the opponent ran out of ships";
       } else {
-        gameResult = GameResult.LOSS;
+        gameResult = GameResult.LOSE;
         reason = "you ran out of ships";
       }
       endGame(gameResult, reason);

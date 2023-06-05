@@ -1,12 +1,8 @@
 package cs3500.pa04.model;
 
+import cs3500.pa04.model.board.Ship;
 import java.util.List;
 import java.util.Map;
-import kyle.pa03.model.Coord;
-import kyle.pa03.model.GameResult;
-import kyle.pa03.model.Ship;
-import kyle.pa03.model.ShipType;
-
 
 /**
  * Represents a single player in a game of BattleSalvo.
@@ -39,7 +35,7 @@ public interface Player {
    *
    * @return the locations of shots on the opponent's board
    */
-  List<kyle.pa03.model.Coord> takeShots();
+  List<Coord> takeShots();
 
   /**
    * Given the list of shots the opponent has fired on this player's board, report which
@@ -49,7 +45,7 @@ public interface Player {
    * @return a filtered list of the given shots that contain all locations of shots that hit a
    *      ship on this board
    */
-  List<kyle.pa03.model.Coord> reportDamage(List<kyle.pa03.model.Coord> opponentShotsOnBoard);
+  List<Coord> reportDamage(List<Coord> opponentShotsOnBoard);
 
   /**
    * Reports to this player what shots in their previous volley returned from takeShots()
