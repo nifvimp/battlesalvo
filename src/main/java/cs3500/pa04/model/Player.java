@@ -1,6 +1,5 @@
 package cs3500.pa04.model;
 
-import cs3500.pa04.model.board.Ship;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ public interface Player {
    */
   List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications);
 
-
   /**
    * Returns this player's shots on the opponent's board. The number of shots returned should
    * equal the number of ships on this player's board that have not sunk.
@@ -43,7 +41,7 @@ public interface Player {
    *
    * @param opponentShotsOnBoard the opponent's shots on this player's board
    * @return a filtered list of the given shots that contain all locations of shots that hit a
-   *      ship on this board
+   * ship on this board
    */
   List<Coord> reportDamage(List<Coord> opponentShotsOnBoard);
 

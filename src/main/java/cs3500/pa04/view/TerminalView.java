@@ -31,7 +31,7 @@ public class TerminalView implements GameView {
    * Creates a new terminal view for testing.
    *
    * @param output test output
-   * @param input test input
+   * @param input  test input
    */
   public TerminalView(PrintStream output, Readable input) {
     this.output = output;
@@ -51,8 +51,9 @@ public class TerminalView implements GameView {
   @Override
   public void displayPlayerBoard(char[][] board) {
     showMessage(String.format("""
-        Your Board:
-        %s""", getBoardString(board)
+            Your Board:
+                    
+            %s""", getBoardString(board)
         )
     );
   }
@@ -60,14 +61,15 @@ public class TerminalView implements GameView {
   @Override
   public void displayOpponentBoard(char[][] board) {
     showMessage(String.format("""
-        Opponent Board Data:
-        
-        %s""", getBoardString(board)
+            Opponent Board Data:
+                    
+            %s""", getBoardString(board)
         )
     );
   }
 
   // TODO: fix output
+
   /**
    * Converts the 2d character array representation of a board to a string.
    *
@@ -96,9 +98,9 @@ public class TerminalView implements GameView {
   @Override
   public String getBoardDimensions(Coord limit) {
     showMessage(String.format("""
-        Boards can be between sizes %s and %s, and dimensions do not need to match.
-        Please enter a valid height and width below:
-        ------------------------------------------------------""",
+            Boards can be between sizes %s and %s, and dimensions do not need to match.
+            Please enter a valid height and width below:
+            ------------------------------------------------------""",
         limit.x(), limit.y()));
     return input.nextLine();
   }
@@ -106,10 +108,10 @@ public class TerminalView implements GameView {
   @Override
   public void invalidBoardDimensions(Coord limit) {
     showMessage(String.format(
-        "Uh Oh! You've entered invalid dimensions. Please remember that "
-            + "the height and width of the game must be in the range %s, inclusive."
-            + "\n------------------------------------------------------",
-        limit
+            "Uh Oh! You've entered invalid dimensions. Please remember that "
+                + "the height and width of the game must be in the range %s, inclusive."
+                + "\n------------------------------------------------------",
+            limit
         )
     );
   }
@@ -117,9 +119,9 @@ public class TerminalView implements GameView {
   @Override
   public String getFleet(int maxSize) {
     showMessage(String.format("""
-        Please enter your fleet in the order %s.
-        Remember, your fleet may not exceed size %s.
-        ------------------------------------------------------""",
+            Please enter your fleet in the order %s.
+            Remember, your fleet may not exceed size %s.
+            ------------------------------------------------------""",
         Arrays.stream(ShipType.values()).map(Enum::toString).toList(),
         maxSize
     ));
@@ -134,8 +136,8 @@ public class TerminalView implements GameView {
   @Override
   public void promptShots(int numShots) {
     showMessage(String.format("""
-          Please enter %s
-          """, numShots + (numShots > 1 ? " shots:" : " shot:")
+        Please enter %s
+        """, numShots + (numShots > 1 ? " shots:" : " shot:")
     ));
   }
 
@@ -156,8 +158,8 @@ public class TerminalView implements GameView {
   @Override
   public void showResults(GameResult result, String reason) {
     showMessage(String.format("""
-        %s
-        %s""",
+            %s
+            %s""",
         result.message(),
         reason
     ));

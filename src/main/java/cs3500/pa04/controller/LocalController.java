@@ -5,8 +5,8 @@ import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.ShipType;
-import cs3500.pa04.model.model.GameModel;
-import cs3500.pa04.model.model.GameModelImpl;
+import cs3500.pa04.model.GameModel;
+import cs3500.pa04.model.GameModelImpl;
 import cs3500.pa04.view.GameView;
 import java.util.Map;
 
@@ -15,9 +15,10 @@ import java.util.Map;
  * running the program.
  */
 public class LocalController implements Controller {
+  private final InputCollector requester;
+  private final BoardObserver observer;
   private final GameView view;
   private final GameModel model;
-  private final UserRequester requester;
 
   /**
    * Makes a new local battle salvo controller.
@@ -28,11 +29,12 @@ public class LocalController implements Controller {
    * @param requester prompter that gets user input
    * @param observer  board observer of all players
    */
-  public LocalController(Player player, Player opponent, GameView view, UserRequester requester,
+  public LocalController(Player player, Player opponent, GameView view, InputCollector requester,
                          BoardObserver observer) {
     this.model = new GameModelImpl(observer, player, opponent);
-    this.view = view;
     this.requester = requester;
+    this.observer = observer;
+    this.view = view;
   }
 
   @Override
@@ -41,7 +43,7 @@ public class LocalController implements Controller {
     int maxShips = Math.min(boardSize.x(), boardSize.y());
     Map<ShipType, Integer> specification = requester.requestFleet(maxShips);
     model.setup(boardSize.x(), boardSize.y(), specification);
-    while (model.getGameResult() == null) {
+    while (!observer.isGameOver()) {
       view.displayOpponentBoard(model.getOpponentBoard());
       view.displayPlayerBoard(model.getPlayerBoard());
       model.volley();
@@ -65,6 +67,7 @@ public class LocalController implements Controller {
       case TIE -> reason = "Both your and opponent ships sunk.";
       default -> reason = "an unexpected error has occurred.";
     }
+    model.endGame(result, reason);
     view.showResults(result, reason);
   }
 }

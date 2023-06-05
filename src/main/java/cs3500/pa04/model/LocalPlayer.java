@@ -1,13 +1,6 @@
-package cs3500.pa04.model.player;
+package cs3500.pa04.model;
 
-import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.Coord;
-import cs3500.pa04.model.GameResult;
-import cs3500.pa04.model.Player1;
-import cs3500.pa04.model.ShipType;
-import cs3500.pa04.model.board.GuessBoard;
-import cs3500.pa04.model.board.PlayerBoard;
-import cs3500.pa04.model.board.Ship1;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -19,11 +12,10 @@ import java.util.Set;
 /**
  * An abstract local player.
  */
-public abstract class LocalPlayer1 implements Player1 {
-  protected final BoardObserver observer;
-  protected PlayerBoard playerBoard;
-  protected GuessBoard opponentBoard;
-  private List<Coord> lastTurnShots;
+public abstract class LocalPlayer implements Player {
+  protected Board board;
+  private final BoardObserver observer;
+  private final List<Coord> lastTurnShots;
   private final Random random;
 
   /**
@@ -31,7 +23,7 @@ public abstract class LocalPlayer1 implements Player1 {
    *
    * @param observer observer of the game
    */
-  public LocalPlayer1(BoardObserver observer) {
+  public LocalPlayer(BoardObserver observer) {
     this(observer, new Random());
   }
 
@@ -41,15 +33,38 @@ public abstract class LocalPlayer1 implements Player1 {
    * @param observer observer of the game
    * @param random   random to randomize by
    */
-  public LocalPlayer1(BoardObserver observer, Random random) {
-    this.random = random;
-    this.observer = observer;
+  public LocalPlayer(BoardObserver observer, Random random) {
     this.lastTurnShots = new ArrayList<>();
+    this.observer = observer;
+    this.random = random;
   }
 
+  /**
+   * @param height         the height of the board, range: [6, 15] inclusive
+   * @param width          the width of the board, range: [6, 15] inclusive
+   * @param specifications a map of ship type to the number of occurrences each ship should
+   *                       appear on the board
+   * @return ships placed on board
+   */
   @Override
-  public List<Ship1> setup(int height, int width, Map<ShipType, Integer> specifications) {
-    List<Ship1> ships = new ArrayList<>();
+  public List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications) {
+    List<Ship> ships = placeShips(height, width, specifications);
+    board = new Board(height, width, ships);
+    observer.registerBoard(name(), board);
+    return ships;
+  }
+
+  /**
+   * Places ships randomly.
+   *
+   * @param height         height of the board
+   * @param width          width of the board
+   * @param specifications a map of ship type to the number of occurrences each ship should
+   *                       appear on the board
+   * @return ships placed on board
+   */
+  private List<Ship> placeShips(int height, int width, Map<ShipType, Integer> specifications) {
+    List<Ship> ships = new ArrayList<>();
     List<ShipType> shipsToPlace = new ArrayList<>();
     for (ShipType shipType : specifications.keySet()) {
       for (int i = 0; i < specifications.get(shipType); i++) {
@@ -80,13 +95,9 @@ public abstract class LocalPlayer1 implements Player1 {
           "It is impossible to setup with the given specifications."
       );
     }
-    int hitsToWin = ships.stream().mapToInt(ship -> ship.shipType().getSize()).sum();
-    playerBoard = new PlayerBoard(height, width, hitsToWin, ships);
-    opponentBoard = new GuessBoard(height, width, hitsToWin);
-    observer.registerPlayerBoard(name(), playerBoard);
-    observer.registerOpponentBoard(name(), opponentBoard);
     return ships;
   }
+
 
   /**
    * Randomly places a ship.
@@ -97,18 +108,18 @@ public abstract class LocalPlayer1 implements Player1 {
    * @param ships    list of ships to add to
    * @return true if the random ship placement was successful
    */
-  private boolean placeShip(ShipType shipType, int height, int width, List<Ship1> ships) {
+  private boolean placeShip(ShipType shipType, int height, int width, List<Ship> ships) {
     Set<Coord> illegal = new HashSet<>();
-    for (Ship1 ship : ships) {
+    for (Ship ship : ships) {
       illegal.addAll(ship.getOccupied());
     }
     int tries = 0;
     boolean placed = false;
-    while (tries < 20) {
+    while (tries < 250) {
       boolean vertical = random.nextBoolean();
       int x = (int) (random.nextDouble() * (width - ((vertical) ? 0 : shipType.getSize())));
       int y = (int) (random.nextDouble() * (height - ((vertical) ? shipType.getSize() : 0)));
-      Ship1 newShip = new Ship1(shipType, vertical, new Coord(x, y));
+      Ship newShip = new Ship(shipType, new Coord(x, y), vertical);
       if (newShip.getOccupied().stream().noneMatch(illegal::contains)) {
         ships.add(newShip);
         placed = true;
@@ -134,7 +145,7 @@ public abstract class LocalPlayer1 implements Player1 {
   public List<Coord> reportDamage(List<Coord> opponentShotsOnBoard) {
     List<Coord> hits = new ArrayList<>();
     for (Coord shot : opponentShotsOnBoard) {
-      if (playerBoard.hit(shot)) {
+      if (board.takeDamage(shot)) {
         hits.add(shot);
       }
     }
@@ -144,11 +155,11 @@ public abstract class LocalPlayer1 implements Player1 {
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
     for (Coord hit : shotsThatHitOpponentShips) {
-      opponentBoard.hit(hit);
+      board.markOpponent(hit, true);
     }
     lastTurnShots.removeAll(shotsThatHitOpponentShips);
     for (Coord miss : lastTurnShots) {
-      opponentBoard.miss(miss);
+      board.markOpponent(miss, false);
     }
     lastTurnShots.clear();
   }

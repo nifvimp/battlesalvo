@@ -1,4 +1,5 @@
-package kyle.pa03.model;
+package cs3500.pa04.model;
+
 
 import java.util.Map;
 
@@ -42,4 +43,12 @@ public interface GameModel {
    * @return the result of the game, or null if the game has not been decided yet.
    */
   GameResult getGameResult();
+
+  /**
+   * Tells the players in the game that the game is over.
+   *
+   * @param result game result in the perspective of the first player
+   * @param reason reason for the end of the game
+   */
+  void endGame(GameResult result, String reason);
 }

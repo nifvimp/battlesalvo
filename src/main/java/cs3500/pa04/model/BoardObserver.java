@@ -1,6 +1,5 @@
 package cs3500.pa04.model;
 
-import cs3500.pa04.model.board.AbstractBoard;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,35 +7,23 @@ import java.util.Map;
  * Observer of the boards in a game.
  */
 public class BoardObserver {
-  private final Map<String, Map<String, AbstractBoard>> gameBoards;
+  private final Map<String, Board> gameBoards;
 
   public BoardObserver() {
     gameBoards = new HashMap<>();
   }
 
   /**
-   * Registers a player board to a player
+   * Registers a board to a player
    *
-   * @param player name to register the board under
+   * @param player      name to register the board under
    * @param playerBoard the board to register
    */
-  public void registerPlayerBoard(String player, AbstractBoard playerBoard) {
-    Map<String, AbstractBoard> entry = gameBoards.getOrDefault(player, new HashMap<>());
-    entry.putIfAbsent("player", playerBoard);
-    gameBoards.put(player, entry);
+  public void registerBoard(String player, Board playerBoard) {
+    gameBoards.put(player, playerBoard);
   }
 
-  /**
-   * Registers a guess board of the opponent of the player.
-   *
-   * @param player name to register the board under
-   * @param opponentBoard the board to register
-   */
-  public void registerOpponentBoard(String player, AbstractBoard opponentBoard) {
-    Map<String, AbstractBoard> entry = gameBoards.getOrDefault(player, new HashMap<>());
-    entry.putIfAbsent("opponent", opponentBoard);
-    gameBoards.put(player, entry);
-  }
+  // TODO: make return from observer view only stuff.
 
   /**
    * Gets the player board of this player.
@@ -44,19 +31,16 @@ public class BoardObserver {
    * @param player name of the player
    * @return player board of player
    */
-  public AbstractBoard getPlayerBoard(String player) {
-    Map<String, AbstractBoard> entry = gameBoards.get(player);
-    return (entry != null) ? entry.get("player") : null;
+  public Board getBoard(String player) {
+    return gameBoards.get(player);
   }
 
-  /**
-   * Gets the guess board of the player's opponent.
-   *
-   * @param player name of the player
-   * @return guess board of player's opponent
-   */
-  public AbstractBoard getOpponentBoard(String player) {
-    Map<String, AbstractBoard> entry = gameBoards.get(player);
-    return (entry != null) ? entry.get("opponent") : null;
+  public boolean isGameOver() {
+    for (Board board : gameBoards.values()) {
+      if (board.shipsLeft() == 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }

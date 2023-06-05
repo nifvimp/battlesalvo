@@ -1,4 +1,8 @@
-package tucker.pa03.model;
+package cs3500.pa04.model;
+
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents one ship on the board.
@@ -8,18 +12,22 @@ public class Ship {
   private final ShipType type;
   private final boolean[] segmentDamage;
   private final Coord startingCoord;
-  private boolean isSunk = false;
+  private final boolean vertical;
+  private boolean isSunk;
 
   /**
    * Constructor for Ship.
    *
-   * @param type the type of ship
+   * @param type          the type of ship
    * @param startingCoord the coordinate the ship starts at and calculates segments based on
+   * @param vertical      true if the ship is vertical
    */
-  public Ship(ShipType type, Coord startingCoord) {
-    this.type = type;
-    this.startingCoord = startingCoord;
+  public Ship(ShipType type, Coord startingCoord, boolean vertical) {
     segmentDamage = new boolean[type.getSize()];
+    this.startingCoord = startingCoord;
+    this.vertical = vertical;
+    this.isSunk = false;
+    this.type = type;
   }
 
   /**
@@ -75,7 +83,7 @@ public class Ship {
     int xdiff = coord.x() - startingCoord.x();
     int ydiff = coord.y() - startingCoord.y();
     if (xdiff > type.getSize() - 1 || ydiff > type.getSize() - 1) {
-      throw new IllegalArgumentException("segment not on ship");
+      throw new IllegalArgumentException("segment not on ship.");
     }
     if (xdiff == 0) {
       return ydiff;
@@ -86,4 +94,20 @@ public class Ship {
     }
   }
 
+  /**
+   * Gets the coords this ship occupies.
+   *
+   * @return set of coords this ship occupies
+   */
+  public Set<Coord> getOccupied() {
+    Set<Coord> occupied = new HashSet<>();
+    for (int i = 0; i < type.getSize(); i++) {
+      int x = startingCoord.x() + ((vertical) ? 0 : i);
+      int y = startingCoord.y() + ((vertical) ? i : 0);
+      occupied.add(new Coord(x, y));
+    }
+    return occupied;
+  }
+
+  // TODO: make method to transform ship to JSON
 }

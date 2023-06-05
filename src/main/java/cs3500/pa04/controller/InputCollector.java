@@ -5,62 +5,120 @@ import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Collects input from the user when requested.
+ * Requests input from user.
  */
 public class InputCollector {
+  private static final Coord BOARD_LIMITS = new Coord(6, 15);
   private final GameView view;
 
   /**
-   * Constructor for InputCollector.
+   * Creates a new UserRequester object.
    *
-   * @param view the view to fetch input from
+   * @param view input of requester
    */
   public InputCollector(GameView view) {
     this.view = view;
   }
 
   /**
-   * Retrieves the board dimensions from the user within the specified range.
+   * Requests valid board dimensions from the user.
    *
-   * @param minDimensions the minimum allowed dimensions for the board
-   * @param maxDimensions the maximum allowed dimensions for the board
-   * @return the board dimensions as a Coord
+   * @return valid user response
    */
-  public Coord getParameters(int minDimensions, int maxDimensions) {
-    int width = 0;
-    int height = 0;
-    boolean retry = false;
-    while (!((width >= minDimensions && width <= maxDimensions)
-        && ((height >= minDimensions && height <= maxDimensions)))) {
-      try {
-        String input = view.getBoardDimensions(new Coord(6, 15));
-        retry = true;
-        int[] nums = numExtractor(2, input);
-        width = nums[0];
-        height = nums[1];
-      } catch (Exception ignored) {
-        // Empty catch block: intentionally left blank
+  public Coord requestBoardSize() {
+    Coord size;
+    try {
+      int[] input = numExtractor(2, view.getBoardDimensions(BOARD_LIMITS));
+      int width = input[0];
+      int height = input[1];
+      if (width < BOARD_LIMITS.x() || width > BOARD_LIMITS.y()
+          || height < BOARD_LIMITS.x() || height > BOARD_LIMITS.y()) {
+        throw new IllegalArgumentException("Dimensions are invalid.");
       }
+      size = new Coord(width, height);
+    } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+      view.invalidBoardDimensions(BOARD_LIMITS);
+      size = requestBoardSize();
     }
-    return new Coord(width, height);
+    return size;
+  }
+
+  /**
+   * Requests valid fleet specifications from the user.
+   *
+   * @param fleetSize the maximum number of ships the requested fleet can have
+   * @return valid user response
+   */
+  public Map<ShipType, Integer> requestFleet(int fleetSize) {
+    Map<ShipType, Integer> specification = new HashMap<>();
+    try {
+      ShipType[] shipTypes = ShipType.values();
+      int[] input = numExtractor(shipTypes.length, view.getFleet(fleetSize));
+      int currSize = 0;
+      for (int i = 0; i < shipTypes.length; i++) {
+        specification.put(shipTypes[i], input[i]);
+        currSize += input[i];
+      }
+      if (currSize > fleetSize) {
+        throw new IllegalArgumentException("Current Fleet size exceeds the max fleet size.");
+      }
+    } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+      view.invalidFleet();
+      return requestFleet(fleetSize);
+    }
+    return specification;
+  }
+
+  /**
+   * Requests board dimensions from the user.
+   *
+   * @param numShots number of shots to request from the user
+   * @return valid user response
+   */
+  public List<Coord> requestShots(int numShots) {
+    Set<Coord> shots = new HashSet<>(numShots);
+    view.promptShots(numShots);
+    try {
+      for (int i = 0; i < numShots; i++) {
+        int[] input = numExtractor(2, view.getShot());
+        int x = input[0];
+        int y = input[1];
+        if (!shots.add(new Coord(x, y))) {
+          throw new IllegalArgumentException("Shot has already been entered.");
+        }
+      }
+    } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+      view.invalidShots();
+      return requestShots(numShots);
+    }
+    return new ArrayList<>(shots);
+  }
+
+  /**
+   * Signals that some of the shots the user inputted were invalid.
+   */
+  public void signalInvalidShots() {
+    view.invalidShots();
   }
 
   /**
    * Extracts the specified number of integers from the given text.
    *
    * @param numsToExtract the number of integers to extract
-   * @param text the text containing the integers
+   * @param text          the text containing the integers
    * @return an array containing the specified number of extracted integers
    * @throws IllegalArgumentException if there are more inputs than expected
-   *        or if there is a problem extracting
+   *                                  or if there is a problem extracting
    */
   private int[] numExtractor(int numsToExtract, String text) {
+    text = text.trim();
     String[] split = text.split(" ");
     if (split.length > numsToExtract) {
       throw new IllegalArgumentException("more inputs than expected");
@@ -71,72 +129,5 @@ public class InputCollector {
       nums[i] = num;
     }
     return nums;
-  }
-
-  /**
-   * Fetches the fleet configuration from the user.
-   *
-   * @param maxFleetSize the total number of ships allowed.
-   * @return a map of ShipType to number of ships.
-   */
-  public Map<ShipType, Integer> getFleet(int maxFleetSize) {
-    int[] ships = new int[4];
-    boolean retry = false;
-    while (!(Arrays.stream(ships).sum() <= maxFleetSize
-        && Arrays.stream(ships).allMatch(i -> i > 0))) {
-      try {
-        String input = view.getFleet(maxFleetSize);
-        retry = true;
-        ships = numExtractor(4, input);
-      } catch (Exception ignored) {
-        // Empty catch block: intentionally left blank
-      }
-    }
-    Map<ShipType, Integer> shipMap = new HashMap<>();
-    shipMap.put(ShipType.CARRIER, ships[0]);
-    shipMap.put(ShipType.BATTLESHIP, ships[1]);
-    shipMap.put(ShipType.DESTROYER, ships[2]);
-    shipMap.put(ShipType.SUBMARINE, ships[3]);
-    return shipMap;
-  }
-
-  /**
-   * Fetches the user's shots on the opponent's board.
-   * If an invalid shot is entered starts over from scratch.
-   *
-   * @param numShots the number of shots to get
-   * @param width the width of the board
-   * @param height the height of the board
-   * @return a list of the coordinates being shot at
-   */
-  public List<Coord> getShots(int numShots, int width, int height) {
-    List<Coord> shots = null;
-    boolean retry = false;
-    boolean shotsCollected = false;
-    while (!shotsCollected) {
-      shotsCollected = true;
-      shots = new ArrayList<>();
-      view.promptShots(numShots);
-      retry = true;
-      for (int i = 0; i < numShots; i++) {
-        try {
-          String input = view.getShot();
-          int[] potentialShot = numExtractor(2, input);
-          int x = potentialShot[0];
-          int y = potentialShot[1];
-          if (x >= 0 && x < width && y >= 0 && y < height) {
-            shots.add(new Coord(x, y));
-          } else {
-            shotsCollected = false;
-            break;
-          }
-        } catch (Exception ignored) {
-          shotsCollected = false;
-          break;
-        }
-      }
-
-    }
-    return shots;
   }
 }

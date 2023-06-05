@@ -1,16 +1,14 @@
-package cs3500.pa04.model.player;
+package cs3500.pa04.model;
 
-import cs3500.pa04.controller.UserRequester;
-import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.Coord;
+import cs3500.pa04.controller.InputCollector;
 import java.util.List;
 import java.util.Random;
 
 /**
  * A manual player.
  */
-public class ManualPlayer extends LocalPlayer1 {
-  private final UserRequester input;
+public class ManualPlayer extends LocalPlayer {
+  private final InputCollector input;
 
   @Override
   public String name() {
@@ -23,7 +21,7 @@ public class ManualPlayer extends LocalPlayer1 {
    * @param observer observer of the game
    * @param input    where to get input from
    */
-  public ManualPlayer(BoardObserver observer, UserRequester input) {
+  public ManualPlayer(BoardObserver observer, InputCollector input) {
     super(observer);
     this.input = input;
   }
@@ -32,18 +30,18 @@ public class ManualPlayer extends LocalPlayer1 {
    * Creates a manual player for testing.
    *
    * @param observer observer of the game
-   * @param random   random to randomize by
    * @param input    where to get input from
+   * @param random   random to randomize by
    */
-  public ManualPlayer(BoardObserver observer, Random random, UserRequester input) {
+  public ManualPlayer(BoardObserver observer, InputCollector input, Random random) {
     super(observer, random);
     this.input = input;
   }
 
   protected List<Coord> loadShots() {
-    int numShots = Math.min(playerBoard.shipsLeft(), playerBoard.validShots().size());
+    int numShots = Math.min(board.shipsLeft(), board.validShots().size());
     List<Coord> shots = input.requestShots(numShots);
-    if (opponentBoard.validShots().containsAll(shots)) {
+    if (board.validShots().containsAll(shots)) {
       return shots;
     } else {
       input.signalInvalidShots();

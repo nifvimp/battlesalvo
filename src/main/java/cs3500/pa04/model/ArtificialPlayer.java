@@ -1,7 +1,6 @@
-package cs3500.pa04.model.player;
+package cs3500.pa04.model;
 
-import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.Coord;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,7 +8,7 @@ import java.util.Random;
 /**
  * A local player of BattleSalvo, controlled by an advanced AI.
  */
-public class ArtificialPlayer extends LocalPlayer1 {
+public class ArtificialPlayer extends LocalPlayer {
   private final Random random;
 
   @Override
@@ -39,13 +38,13 @@ public class ArtificialPlayer extends LocalPlayer1 {
   }
   protected List<Coord> loadShots() {
     List<Coord> shots = new ArrayList<>();
-    List<Coord> validShots = new ArrayList<>(opponentBoard.validShots());
-    for (int i = 0; i < playerBoard.shipsLeft() && validShots.size() > 0; i++) {
+    List<Coord> validShots = new ArrayList<>(board.validShots());
+    for (int i = 0; i < board.shipsLeft() && validShots.size() > 0; i++) {
       int randomShot = random.nextInt(validShots.size());
       shots.add(validShots.get(randomShot));
       validShots.remove(randomShot);
     }
-    // TODO: fix up to be better
+    // TODO: Improve Shooting Algorithm
     return shots;
   }
 }
