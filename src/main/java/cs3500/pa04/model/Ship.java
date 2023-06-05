@@ -40,16 +40,6 @@ public class Ship {
   }
 
   /**
-   * Checks if the segment of the ship is damaged or not.
-   *
-   * @param coord the coordinate of the ship to check
-   * @return whether the section is damaged
-   */
-  public boolean isSegmentDamaged(Coord coord) {
-    return segmentDamage[getSegmentNum(coord)];
-  }
-
-  /**
    * Checks the state of the ship.
    *
    * @return whether the ship is sunk or not
@@ -85,9 +75,9 @@ public class Ship {
     if (xdiff > type.getSize() - 1 || ydiff > type.getSize() - 1) {
       throw new IllegalArgumentException("segment not on ship.");
     }
-    if (xdiff == 0) {
+    if (vertical && xdiff == 0) {
       return ydiff;
-    } else if (ydiff == 0) {
+    } else if (!vertical && ydiff == 0) {
       return xdiff;
     } else {
       throw new IllegalArgumentException("segment not on ship");

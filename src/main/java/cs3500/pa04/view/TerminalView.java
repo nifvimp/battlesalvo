@@ -78,9 +78,9 @@ public class TerminalView implements GameView {
    */
   private String getBoardString(char[][] board) {
     StringBuilder boardString = new StringBuilder();
-    boardString.append("    ");
+    boardString.append("      ");
     for (int i = 0; i < board[0].length; i++) {
-      boardString.append(" ").append(i);
+      boardString.append("  ").append(i);
     }
     boardString.append('\n');
     for (int i = 0; i < board.length; i++) {
