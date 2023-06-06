@@ -3,7 +3,6 @@ package pa04.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.LocalPlayer;

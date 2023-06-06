@@ -22,8 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The controller for a Battle Salvo game that communicates with a server to
+ * running the program.
+ */
 public class ProxyController implements Controller {
-  private final static ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper MAPPER = new ObjectMapper();
   private final PrintStream out;
   private final InputStream in;
   private final Socket server;
@@ -37,7 +41,7 @@ public class ProxyController implements Controller {
   @Override
   public void run() {
     try {
-      JsonParser parser = mapper.getFactory().createParser(this.in);
+      JsonParser parser = MAPPER.getFactory().createParser(this.in);
 
       while (!this.server.isClosed()) {
         MessageJson message = parser.readValueAs(MessageJson.class);

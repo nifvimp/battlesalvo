@@ -116,7 +116,8 @@ public abstract class LocalPlayer implements Player {
     int tries = 0;
     boolean placed = false;
     while (tries < 250) {
-      Orientation orientation = (random.nextBoolean()) ? Orientation.VERTICAL : Orientation.HORIZONTAL;
+      Orientation orientation =
+          (random.nextBoolean()) ? Orientation.VERTICAL : Orientation.HORIZONTAL;
       int x = (int) (random.nextDouble()
           * (width - ((orientation == Orientation.VERTICAL) ? 0 : shipType.getSize())));
       int y = (int) (random.nextDouble()

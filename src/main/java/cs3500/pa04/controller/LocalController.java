@@ -1,12 +1,13 @@
 package cs3500.pa04.controller;
 
+
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameModel;
+import cs3500.pa04.model.GameModelImpl;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.ShipType;
-import cs3500.pa04.model.GameModel;
-import cs3500.pa04.model.GameModelImpl;
 import cs3500.pa04.view.GameView;
 import java.util.Map;
 
@@ -23,13 +24,14 @@ public class LocalController implements Controller {
   /**
    * Makes a new local battle salvo controller.
    *
-   * @param player    user
-   * @param opponent  user's opponent
-   * @param view      view of the game
+   * @param player       user
+   * @param opponent     user's opponent
+   * @param view         view of the game
    * @param communicator prompter that gets user input
-   * @param observer  board observer of all players
+   * @param observer     board observer of all players
    */
-  public LocalController(Player player, Player opponent, GameView view, UserCommunicator communicator,
+  public LocalController(Player player, Player opponent, GameView view,
+                         UserCommunicator communicator,
                          BoardObserver observer) {
     this.model = new GameModelImpl(observer, player, opponent);
     this.communicator = communicator;

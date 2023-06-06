@@ -35,6 +35,11 @@ public class BoardObserver {
     return gameBoards.get(player);
   }
 
+  /**
+   * Checks if the game is over, which is when all ships have sunk.
+   *
+   * @return true if the game is over
+   */
   public boolean isGameOver() {
     for (Board board : gameBoards.values()) {
       if (board.shipsLeft() == 0) {

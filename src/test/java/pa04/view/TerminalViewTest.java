@@ -3,7 +3,6 @@ package pa04.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.ShipType;

@@ -36,6 +36,7 @@ public class ArtificialPlayer extends LocalPlayer {
     super(observer, random);
     this.random = random;
   }
+
   protected List<Coord> loadShots() {
     List<Coord> shots = new ArrayList<>();
     List<Coord> validShots = new ArrayList<>(board.validShots());

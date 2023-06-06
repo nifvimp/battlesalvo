@@ -1,5 +1,8 @@
 package cs3500.pa04.model;
 
+/**
+ * Represents a cell in the board of a game of battleship.
+ */
 public class Cell {
   private final Ship ship;
   private boolean shot;
@@ -12,6 +15,11 @@ public class Cell {
     this.ship = null;
   }
 
+  /**
+   * Gets the character representation of this cell based on its state.
+   *
+   * @return character representation of this cell
+   */
   public char getCharacter() {
     if (ship != null) {
       return (ship.isSunk() ? 'S' : (shot) ? 'H' : ship.getType().getCharacter());

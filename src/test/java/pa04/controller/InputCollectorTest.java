@@ -3,7 +3,6 @@ package pa04.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.ShipType;
@@ -106,10 +105,10 @@ public class InputCollectorTest {
         """);
     Map<ShipType, Integer> specifications = collector.requestFleet(6);
     assertEquals(Map.of(
-        ShipType.CARRIER, 1,
-        ShipType.BATTLESHIP, 2,
-        ShipType.DESTROYER, 2,
-        ShipType.SUBMARINE, 1),
+            ShipType.CARRIER, 1,
+            ShipType.BATTLESHIP, 2,
+            ShipType.DESTROYER, 2,
+            ShipType.SUBMARINE, 1),
         specifications);
     String invalid = "The fleet you entered is invalid. Remember, your fleet must of size 6 "
         + "and have at least one of each ship type.\n";
@@ -133,8 +132,8 @@ public class InputCollectorTest {
     List<Coord> input = collector.requestShots(5);
     assertEquals(
         Set.of(new Coord(0, 0), new Coord(1, 3),
-            new Coord(3, 2), new Coord(5, 4),
-        new Coord(5, 5)), new HashSet<>(input));
+              new Coord(3, 2), new Coord(5, 4),
+              new Coord(5, 5)), new HashSet<>(input));
     assertEquals("Please Enter 5 Shots:\n", testOut.toString());
   }
 

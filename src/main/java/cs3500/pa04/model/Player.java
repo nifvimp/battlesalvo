@@ -41,7 +41,7 @@ public interface Player {
    *
    * @param opponentShotsOnBoard the opponent's shots on this player's board
    * @return a filtered list of the given shots that contain all locations of shots that hit a
-   * ship on this board
+   *      ship on this board
    */
   List<Coord> reportDamage(List<Coord> opponentShotsOnBoard);
 
