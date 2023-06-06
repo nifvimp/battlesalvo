@@ -12,6 +12,6 @@ public record CoordJson(
    * @return coord of this coordJson
    */
   public Coord toCoord() {
-    return new Coord(y, x);
+    return new Coord(x, y);
   }
 }

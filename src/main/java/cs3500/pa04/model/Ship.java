@@ -94,7 +94,7 @@ public class Ship {
     Set<Coord> occupied = new HashSet<>();
     for (int i = 0; i < type.getSize(); i++) {
       int x = startingCoord.x() + ((orientation == Orientation.VERTICAL) ? 0 : i);
-      int y = startingCoord.y() + ((orientation == Orientation.HORIZONTAL) ? i : 0);
+      int y = startingCoord.y() + ((orientation == Orientation.HORIZONTAL) ? 0 : i);
       occupied.add(new Coord(x, y));
     }
     return occupied;

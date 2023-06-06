@@ -39,6 +39,8 @@ public class Board {
     }
     for (Ship ship : ships) {
       for (Coord coord : ship.getOccupied()) {
+        if(coord.y() >= height || coord.x() >= width) {
+        }
         playerBoard[coord.y()][coord.x()] = new Cell(ship);
       }
     }

@@ -4,6 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public record MessageJson(
-    @JsonProperty String name,
-    @JsonProperty JsonNode arguments) {
+    @JsonProperty("method-name") String name,
+    @JsonProperty("arguments") JsonNode arguments) {
 }

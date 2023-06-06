@@ -15,6 +15,7 @@ import cs3500.pa04.model.Ship;
 import cs3500.pa04.model.ShipType;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class ProxyController implements Controller {
   public ProxyController(Socket server, Player player) throws IOException {
     this.server = server;
     this.out = new PrintStream(server.getOutputStream());
+    //this.out = new PrintStream(System.out);
     this.in = server.getInputStream();
     this.player = player;
   }
@@ -59,7 +61,9 @@ public class ProxyController implements Controller {
         MessageJson message = parser.readValueAs(MessageJson.class);
         delegateMessage(message);
       }
+      System.out.println("testing: server closed");
     } catch (IOException e) {
+      e.printStackTrace();
       // Disconnected from server or parsing exception
     }
   }
@@ -87,12 +91,11 @@ public class ProxyController implements Controller {
   private void handleJoin() {
     MessageJson response = new MessageJson(
         "join", MAPPER.createObjectNode()
-        .set("arguments", MAPPER.createObjectNode()
             .put("name", "nifvimp")
             .put("game-type", GameType.SINGLE.name())
-        )
     );
     JsonNode jsonResponse = serializeRecord(response);
+    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -110,6 +113,7 @@ public class ProxyController implements Controller {
         new MessageJson("setup",
             serializeRecord(response))
     );
+    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -120,6 +124,7 @@ public class ProxyController implements Controller {
         new MessageJson("take-shots",
             serializeRecord(response))
     );
+    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -134,6 +139,7 @@ public class ProxyController implements Controller {
         new MessageJson("report-damage",
             serializeRecord(response))
     );
+    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -146,6 +152,7 @@ public class ProxyController implements Controller {
     JsonNode jsonResponse = serializeRecord(
         new MessageJson("successful-hits", MAPPER.createObjectNode())
     );
+    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -159,7 +166,8 @@ public class ProxyController implements Controller {
     this.out.println(jsonResponse);
     try {
       server.close();
-    } catch (IOException ignored) {
+    } catch (IOException e) {
+      e.printStackTrace();
       // An empty catch block
     }
   }
