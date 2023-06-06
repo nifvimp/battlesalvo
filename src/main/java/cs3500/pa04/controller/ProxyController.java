@@ -175,7 +175,7 @@ public class ProxyController implements Controller {
     try {
       server.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(e.getMessage());
       // An empty catch block
     }
   }

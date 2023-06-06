@@ -29,4 +29,4 @@
   - ex. CoordJson -> toCoord() -> Coord
 - [Created delegate json and helper methods] to handle json messages from the server
   - methods and structure were based on Lab 6
-- 
+- Added view to proxyController for debugging
