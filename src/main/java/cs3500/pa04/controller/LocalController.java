@@ -66,7 +66,7 @@ public class LocalController implements Controller {
     switch (result) {
       case WIN -> reason = "All opponent ships sunk.";
       case LOSE -> reason = "All your ships sunk.";
-      case TIE -> reason = "Both your and opponent ships sunk.";
+      case DRAW -> reason = "Both your and opponent ships sunk.";
       default -> reason = "an unexpected error has occurred.";
     }
     model.endGame(result, reason);

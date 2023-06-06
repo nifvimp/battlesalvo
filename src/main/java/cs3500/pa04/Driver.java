@@ -33,7 +33,7 @@ public class Driver {
     } else {
       try {
         Socket socket = new Socket("0.0.0.0", 35001);
-        controller = new ProxyController(socket, new ArtificialPlayer(observer));
+        controller = new ProxyController(socket, new ArtificialPlayer(observer), view, observer);
       } catch (IOException e) {
         e.printStackTrace();
         System.err.println("There was an error connecting to the server.");

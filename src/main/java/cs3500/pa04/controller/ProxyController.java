@@ -8,14 +8,15 @@ import cs3500.pa04.json.FleetJson;
 import cs3500.pa04.json.GameType;
 import cs3500.pa04.json.MessageJson;
 import cs3500.pa04.json.VolleyJson;
+import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.Ship;
 import cs3500.pa04.model.ShipType;
+import cs3500.pa04.view.GameView;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ import java.util.Map;
  */
 public class ProxyController implements Controller {
   private static final ObjectMapper MAPPER = new ObjectMapper();
+  private final BoardObserver observer;
   private final PrintStream out;
   private final InputStream in;
+  private final GameView view;
   private final Socket server;
   private final Player player;
 
@@ -44,19 +47,21 @@ public class ProxyController implements Controller {
    * @param player the instance of the player
    * @throws IOException if IOException occurs
    */
-  public ProxyController(Socket server, Player player) throws IOException {
+  public ProxyController(Socket server, Player player, GameView view, BoardObserver observer)
+      throws IOException {
     this.server = server;
     this.out = new PrintStream(server.getOutputStream());
     //this.out = new PrintStream(System.out);
     this.in = server.getInputStream();
+    this.observer = observer;
     this.player = player;
+    this.view = view;
   }
 
   @Override
   public void run() {
     try {
       JsonParser parser = MAPPER.getFactory().createParser(this.in);
-
       while (!this.server.isClosed()) {
         MessageJson message = parser.readValueAs(MessageJson.class);
         delegateMessage(message);
@@ -91,8 +96,8 @@ public class ProxyController implements Controller {
   private void handleJoin() {
     MessageJson response = new MessageJson(
         "join", MAPPER.createObjectNode()
-            .put("name", "nifvimp")
-            .put("game-type", GameType.SINGLE.name())
+        .put("name", "nifvimp")
+        .put("game-type", GameType.SINGLE.name())
     );
     JsonNode jsonResponse = serializeRecord(response);
     System.out.println(jsonResponse);
@@ -100,6 +105,8 @@ public class ProxyController implements Controller {
   }
 
   private void handleSetup(JsonNode arguments) {
+    System.out.println("Setting up...\n\n");
+
     int width = arguments.get("width").asInt();
     int height = arguments.get("height").asInt();
     JsonNode fleetSpec = arguments.get("fleet-spec");
@@ -113,18 +120,18 @@ public class ProxyController implements Controller {
         new MessageJson("setup",
             serializeRecord(response))
     );
-    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
   private void handleTakeShots() {
+    this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
+    this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
     List<Coord> shots = player.takeShots();
     VolleyJson response = new VolleyJson(shots.stream().map(Coord::toJson).toList());
     JsonNode jsonResponse = serializeRecord(
         new MessageJson("take-shots",
             serializeRecord(response))
     );
-    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -139,7 +146,6 @@ public class ProxyController implements Controller {
         new MessageJson("report-damage",
             serializeRecord(response))
     );
-    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
@@ -152,13 +158,15 @@ public class ProxyController implements Controller {
     JsonNode jsonResponse = serializeRecord(
         new MessageJson("successful-hits", MAPPER.createObjectNode())
     );
-    System.out.println(jsonResponse);
     this.out.println(jsonResponse);
   }
 
   private void endGame(JsonNode arguments) {
+    this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
+    this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
     GameResult result = GameResult.valueOf(arguments.get("result").textValue());
     String reason = arguments.get("reason").textValue();
+    view.showResults(result, reason);
     player.endGame(result, reason);
     JsonNode jsonResponse = serializeRecord(
         new MessageJson("end-game", MAPPER.createObjectNode())

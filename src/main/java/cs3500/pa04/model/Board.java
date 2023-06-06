@@ -100,6 +100,7 @@ public class Board {
    * @param hit   true if shot on opponent was a hit
    */
   public void markOpponent(Coord coord, boolean hit) {
+    shotsLeft.remove(coord);
     opponentKnowledge[coord.y()][coord.x()] = hit ? 'H' : 'X';
   }
 

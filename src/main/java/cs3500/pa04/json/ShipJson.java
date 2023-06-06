@@ -6,7 +6,7 @@ import cs3500.pa04.model.Orientation;
 
 @JsonPropertyOrder({"coord", "length", "direction"})
 public record ShipJson(
-    @JsonProperty CoordJson coord,
+    @JsonProperty("coord") CoordJson coord,
     @JsonProperty("length") int size,
     @JsonProperty("direction") Orientation orientation) {
 }

@@ -56,7 +56,7 @@ public class GameModelImpl implements GameModel {
     boolean playerShipsSunk = observer.getBoard(player.name()).shipsLeft() <= 0;
     boolean opponentShipsSunk = observer.getBoard(opponent.name()).shipsLeft() <= 0;
     if (playerShipsSunk && opponentShipsSunk) {
-      result = GameResult.TIE;
+      result = GameResult.DRAW;
     } else if (playerShipsSunk) {
       result = GameResult.LOSE;
     } else if (opponentShipsSunk) {
@@ -69,6 +69,6 @@ public class GameModelImpl implements GameModel {
   public void endGame(GameResult result, String reason) {
     player.endGame(result, reason);
     opponent.endGame(result == GameResult.WIN ? GameResult.LOSE :
-        result == GameResult.LOSE ? GameResult.WIN : GameResult.TIE, reason);
+        result == GameResult.LOSE ? GameResult.WIN : GameResult.DRAW, reason);
   }
 }

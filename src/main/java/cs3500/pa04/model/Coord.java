@@ -21,6 +21,6 @@ public record Coord(int x, int y) {
   }
 
   public CoordJson toJson() {
-    return new CoordJson(y, x);
+    return new CoordJson(x, y);
   }
 }
