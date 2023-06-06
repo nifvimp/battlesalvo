@@ -1,5 +1,7 @@
 package cs3500.pa04.model;
 
+import cs3500.pa04.json.CoordJson;
+
 /**
  * Record class representing one coordinate for the game.
  *
@@ -16,5 +18,9 @@ public record Coord(int x, int y) {
   @Override
   public String toString() {
     return String.format("(%s, %s)", x, y);
+  }
+
+  public CoordJson toJson() {
+    return new CoordJson(y, x);
   }
 }

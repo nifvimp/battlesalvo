@@ -116,10 +116,12 @@ public abstract class LocalPlayer implements Player {
     int tries = 0;
     boolean placed = false;
     while (tries < 250) {
-      boolean vertical = random.nextBoolean();
-      int x = (int) (random.nextDouble() * (width - ((vertical) ? 0 : shipType.getSize())));
-      int y = (int) (random.nextDouble() * (height - ((vertical) ? shipType.getSize() : 0)));
-      Ship newShip = new Ship(shipType, new Coord(x, y), vertical);
+      Orientation orientation = (random.nextBoolean()) ? Orientation.VERTICAL : Orientation.HORIZONTAL;
+      int x = (int) (random.nextDouble()
+          * (width - ((orientation == Orientation.VERTICAL) ? 0 : shipType.getSize())));
+      int y = (int) (random.nextDouble()
+          * (height - ((orientation == Orientation.HORIZONTAL) ? 0 : shipType.getSize())));
+      Ship newShip = new Ship(shipType, new Coord(x, y), orientation);
       if (newShip.getOccupied().stream().noneMatch(illegal::contains)) {
         ships.add(newShip);
         placed = true;

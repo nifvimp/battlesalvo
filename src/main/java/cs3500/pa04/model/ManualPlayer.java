@@ -1,6 +1,6 @@
 package cs3500.pa04.model;
 
-import cs3500.pa04.controller.InputCollector;
+import cs3500.pa04.controller.UserCommunicator;
 import java.util.List;
 import java.util.Random;
 
@@ -8,7 +8,7 @@ import java.util.Random;
  * A manual player.
  */
 public class ManualPlayer extends LocalPlayer {
-  private final InputCollector input;
+  private final UserCommunicator input;
 
   @Override
   public String name() {
@@ -21,7 +21,7 @@ public class ManualPlayer extends LocalPlayer {
    * @param observer observer of the game
    * @param input    where to get input from
    */
-  public ManualPlayer(BoardObserver observer, InputCollector input) {
+  public ManualPlayer(BoardObserver observer, UserCommunicator input) {
     super(observer);
     this.input = input;
   }
@@ -33,7 +33,7 @@ public class ManualPlayer extends LocalPlayer {
    * @param input    where to get input from
    * @param random   random to randomize by
    */
-  public ManualPlayer(BoardObserver observer, InputCollector input, Random random) {
+  public ManualPlayer(BoardObserver observer, UserCommunicator input, Random random) {
     super(observer, random);
     this.input = input;
   }

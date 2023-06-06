@@ -1,6 +1,7 @@
 package cs3500.pa04.model;
 
 
+import cs3500.pa04.json.ShipJson;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,20 +13,20 @@ public class Ship {
   private final ShipType type;
   private final boolean[] segmentDamage;
   private final Coord startingCoord;
-  private final boolean vertical;
+  private final Orientation orientation;
   private boolean isSunk;
 
   /**
-   * Constructor for Ship.
+   * Constructor a Ship.
    *
    * @param type          the type of ship
    * @param startingCoord the coordinate the ship starts at and calculates segments based on
-   * @param vertical      true if the ship is vertical
+   * @param orientation   the orientation of ship
    */
-  public Ship(ShipType type, Coord startingCoord, boolean vertical) {
+  public Ship(ShipType type, Coord startingCoord, Orientation orientation) {
     segmentDamage = new boolean[type.getSize()];
     this.startingCoord = startingCoord;
-    this.vertical = vertical;
+    this.orientation = orientation;
     this.isSunk = false;
     this.type = type;
   }
@@ -75,9 +76,9 @@ public class Ship {
     if (xdiff > type.getSize() - 1 || ydiff > type.getSize() - 1) {
       throw new IllegalArgumentException("segment not on ship.");
     }
-    if (vertical && xdiff == 0) {
+    if (orientation == Orientation.VERTICAL && xdiff == 0) {
       return ydiff;
-    } else if (!vertical && ydiff == 0) {
+    } else if (orientation == Orientation.HORIZONTAL && ydiff == 0) {
       return xdiff;
     } else {
       throw new IllegalArgumentException("segment not on ship");
@@ -92,12 +93,19 @@ public class Ship {
   public Set<Coord> getOccupied() {
     Set<Coord> occupied = new HashSet<>();
     for (int i = 0; i < type.getSize(); i++) {
-      int x = startingCoord.x() + ((vertical) ? 0 : i);
-      int y = startingCoord.y() + ((vertical) ? i : 0);
+      int x = startingCoord.x() + ((orientation == Orientation.VERTICAL) ? 0 : i);
+      int y = startingCoord.y() + ((orientation == Orientation.HORIZONTAL) ? i : 0);
       occupied.add(new Coord(x, y));
     }
     return occupied;
   }
 
-  // TODO: make method to transform ship to JSON
+  /**
+   * Converts this ship to a ShipJson.
+   *
+   * @return ShipJson of thisship
+   */
+  public ShipJson toJson() {
+    return new ShipJson(startingCoord.toJson(), type.getSize(), orientation);
+  }
 }

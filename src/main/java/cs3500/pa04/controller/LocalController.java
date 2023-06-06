@@ -15,7 +15,7 @@ import java.util.Map;
  * running the program.
  */
 public class LocalController implements Controller {
-  private final InputCollector requester;
+  private final UserCommunicator communicator;
   private final BoardObserver observer;
   private final GameView view;
   private final GameModel model;
@@ -26,22 +26,22 @@ public class LocalController implements Controller {
    * @param player    user
    * @param opponent  user's opponent
    * @param view      view of the game
-   * @param requester prompter that gets user input
+   * @param communicator prompter that gets user input
    * @param observer  board observer of all players
    */
-  public LocalController(Player player, Player opponent, GameView view, InputCollector requester,
+  public LocalController(Player player, Player opponent, GameView view, UserCommunicator communicator,
                          BoardObserver observer) {
     this.model = new GameModelImpl(observer, player, opponent);
-    this.requester = requester;
+    this.communicator = communicator;
     this.observer = observer;
     this.view = view;
   }
 
   @Override
   public void run() {
-    Coord boardSize = requester.requestBoardSize();
+    Coord boardSize = communicator.requestBoardDimensions();
     int maxShips = Math.min(boardSize.x(), boardSize.y());
-    Map<ShipType, Integer> specification = requester.requestFleet(maxShips);
+    Map<ShipType, Integer> specification = communicator.requestFleet(maxShips);
     model.setup(boardSize.x(), boardSize.y(), specification);
     while (!observer.isGameOver()) {
       view.displayOpponentBoard(model.getOpponentBoard());

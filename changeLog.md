@@ -13,3 +13,19 @@
   - Decided to use loadShots() abstraction for local player subclasses
 - Merged rest of project
   - Went with controller and model that corresponded with player implementation
+
+# Implementing Server Communication
+- [Added ProxyController] that handles all server requests and running the game
+- [Added Json Records]`
+  - MessageJson
+  - Coord Json
+  - FleetJson
+  - ShipJson
+  - VolleyJson
+- Changed ship record to use Orientation enum instead of boolean
+- Added GameType enum for join server json response
+- [Added toJson() methods to Coord and Ship]
+- [Added to original class methods to Json classes]
+  - ex. CoordJson -> toCoord() -> Coord
+- [Created delegate json and helper methods] to handle json messages from the server
+  - methods and structure were based on Lab 6
