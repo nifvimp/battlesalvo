@@ -16,7 +16,7 @@
 
 # Implementing Server Communication
 - [Added ProxyController] that handles all server requests and running the game
-- [Added Json Records]`
+- [Added Json Records] for easy JsonNode creation
   - MessageJson
   - Coord Json
   - FleetJson
@@ -29,4 +29,6 @@
   - ex. CoordJson -> toCoord() -> Coord
 - [Created delegate json and helper methods] to handle json messages from the server
   - methods and structure were based on Lab 6
-- Added view to proxyController for debugging
+- Added view to proxyController
+
+# Improving Battle Salvo AI

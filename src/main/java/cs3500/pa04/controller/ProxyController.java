@@ -100,13 +100,11 @@ public class ProxyController implements Controller {
         .put("game-type", GameType.SINGLE.name())
     );
     JsonNode jsonResponse = serializeRecord(response);
-    System.out.println(jsonResponse);
+    view.greet();
     this.out.println(jsonResponse);
   }
 
   private void handleSetup(JsonNode arguments) {
-    System.out.println("Setting up...\n\n");
-
     int width = arguments.get("width").asInt();
     int height = arguments.get("height").asInt();
     JsonNode fleetSpec = arguments.get("fleet-spec");

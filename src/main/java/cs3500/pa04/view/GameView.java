@@ -58,6 +58,11 @@ public interface GameView {
   String getFleet(int maxSize);
 
   /**
+   * Prompts the user that their previously entered fleet specifications were invalid.
+   */
+  void invalidFleet();
+
+  /**
    * Prompts the user to enter their shots.
    * Doesn't prompt them, just gets their input.
    *
@@ -76,11 +81,6 @@ public interface GameView {
    * Prompts the user that some of the shots they previously entered were invalid.
    */
   void invalidShots();
-
-  /**
-   * Prompts the user that their previously entered fleet specifications were invalid.
-   */
-  void invalidFleet();
 
   /**
    * Informs the user that the game is over and why.

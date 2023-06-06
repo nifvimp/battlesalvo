@@ -41,6 +41,7 @@ public class LocalController implements Controller {
 
   @Override
   public void run() {
+    view.greet();
     Coord boardSize = communicator.requestBoardDimensions();
     int maxShips = Math.min(boardSize.x(), boardSize.y());
     Map<ShipType, Integer> specification = communicator.requestFleet(maxShips);
