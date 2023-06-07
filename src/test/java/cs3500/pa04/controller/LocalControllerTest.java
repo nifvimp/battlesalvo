@@ -1,11 +1,8 @@
-package pa04.controller;
+package cs3500.pa04.controller;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.controller.Controller;
-import cs3500.pa04.controller.LocalController;
-import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.model.ArtificialPlayer;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.ManualPlayer;
@@ -16,7 +13,7 @@ import java.io.StringReader;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestOutputStream;
+import cs3500.pa04.TestOutputStream;
 
 
 /**

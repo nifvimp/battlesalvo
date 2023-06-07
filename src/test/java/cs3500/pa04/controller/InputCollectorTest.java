@@ -1,9 +1,10 @@
-package pa04.controller;
+package cs3500.pa04.controller;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.controller.UserCommunicator;
+import cs3500.pa04.TestInputStream;
+import cs3500.pa04.TestOutputStream;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
@@ -14,8 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestInputStream;
-import pa04.TestOutputStream;
 
 /**
  * Tests the InputCollector class.
