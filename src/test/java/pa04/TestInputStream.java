@@ -33,7 +33,7 @@ public class TestInputStream extends ByteArrayInputStream {
    * @param input character sequence to add to this input stream.
    */
   public void input(CharSequence input) {
-    addBytes((input.toString() + '\n').getBytes());
+    addBytes((input.toString() + System.lineSeparator()).getBytes());
   }
 
   /**

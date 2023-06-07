@@ -141,7 +141,6 @@ public class TerminalView implements GameView {
     ));
   }
 
-  // TODO: change board to allow repeats
   @Override
   public void invalidShots() {
     showMessage("""
@@ -155,6 +154,7 @@ public class TerminalView implements GameView {
     return input.nextLine();
   }
 
+  // TODO: remove result?
   @Override
   public void showResults(GameResult result, String reason) {
     showMessage(String.format("""

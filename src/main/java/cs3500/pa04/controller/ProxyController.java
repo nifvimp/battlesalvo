@@ -3,11 +3,6 @@ package cs3500.pa04.controller;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cs3500.pa04.json.CoordJson;
-import cs3500.pa04.json.FleetJson;
-import cs3500.pa04.json.GameType;
-import cs3500.pa04.json.MessageJson;
-import cs3500.pa04.json.VolleyJson;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
@@ -51,7 +46,6 @@ public class ProxyController implements Controller {
       throws IOException {
     this.server = server;
     this.out = new PrintStream(server.getOutputStream());
-    //this.out = new PrintStream(System.out);
     this.in = server.getInputStream();
     this.observer = observer;
     this.player = player;
@@ -63,7 +57,7 @@ public class ProxyController implements Controller {
     try {
       JsonParser parser = MAPPER.getFactory().createParser(this.in);
       while (!this.server.isClosed()) {
-        MessageJson message = parser.readValueAs(MessageJson.class);
+        JsonNode message = parser.readValueAs(JsonNode.class);
         delegateMessage(message);
       }
       System.out.println("testing: server closed");
@@ -79,9 +73,9 @@ public class ProxyController implements Controller {
    *
    * @param message the MessageJSON used to determine what the server has sent
    */
-  private void delegateMessage(MessageJson message) {
-    String name = message.name();
-    JsonNode arguments = message.arguments();
+  private void delegateMessage(JsonNode message) {
+    String name = message.get("method-name").textValue();
+    JsonNode arguments = message.get("arguments");
     switch (name) {
       case "join" -> handleJoin();
       case "setup" -> handleSetup(arguments);
@@ -94,14 +88,11 @@ public class ProxyController implements Controller {
   }
 
   private void handleJoin() {
-    MessageJson response = new MessageJson(
-        "join", MAPPER.createObjectNode()
+    sendMessage("join", MAPPER.createObjectNode()
         .put("name", "nifvimp")
         .put("game-type", GameType.SINGLE.name())
     );
-    JsonNode jsonResponse = serializeRecord(response);
     view.greet();
-    this.out.println(jsonResponse);
   }
 
   private void handleSetup(JsonNode arguments) {
@@ -113,50 +104,38 @@ public class ProxyController implements Controller {
       specifications.put(shipType, fleetSpec.get(shipType.name()).asInt(0));
     }
     List<Ship> placements = player.setup(height, width, specifications);
-    FleetJson response = new FleetJson(placements.stream().map(Ship::toJson).toList());
-    JsonNode jsonResponse = serializeRecord(
-        new MessageJson("setup",
-            serializeRecord(response))
+    sendMessage("setup", MAPPER.createObjectNode()
+        .set("fleet", MAPPER.convertValue(placements, JsonNode.class))
     );
-    this.out.println(jsonResponse);
   }
 
   private void handleTakeShots() {
     this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
     this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
     List<Coord> shots = player.takeShots();
-    VolleyJson response = new VolleyJson(shots.stream().map(Coord::toJson).toList());
-    JsonNode jsonResponse = serializeRecord(
-        new MessageJson("take-shots",
-            serializeRecord(response))
+    sendMessage("take-shots", MAPPER.createObjectNode()
+        .set("coordinates", MAPPER.convertValue(shots, JsonNode.class))
     );
-    this.out.println(jsonResponse);
   }
 
   private void handleReportDamage(JsonNode arguments) {
     List<Coord> shots = new ArrayList<>();
     for (JsonNode node : arguments.get("coordinates")) {
-      shots.add(MAPPER.convertValue(node, CoordJson.class).toCoord());
+      shots.add(MAPPER.convertValue(node, Coord.class));
     }
     List<Coord> successful = player.reportDamage(shots);
-    VolleyJson response = new VolleyJson(successful.stream().map(Coord::toJson).toList());
-    JsonNode jsonResponse = serializeRecord(
-        new MessageJson("report-damage",
-            serializeRecord(response))
+    sendMessage("report-damage", MAPPER.createObjectNode()
+        .set("coordinates", MAPPER.convertValue(successful, JsonNode.class))
     );
-    this.out.println(jsonResponse);
   }
 
   private void handleSuccessfulHits(JsonNode arguments) {
     List<Coord> shots = new ArrayList<>();
     for (JsonNode node : arguments.get("coordinates")) {
-      shots.add(MAPPER.convertValue(node, CoordJson.class).toCoord());
+      shots.add(MAPPER.convertValue(node, Coord.class));
     }
     player.successfulHits(shots);
-    JsonNode jsonResponse = serializeRecord(
-        new MessageJson("successful-hits", MAPPER.createObjectNode())
-    );
-    this.out.println(jsonResponse);
+    sendMessage("successful-hits", MAPPER.createObjectNode());
   }
 
   private void endGame(JsonNode arguments) {
@@ -166,10 +145,7 @@ public class ProxyController implements Controller {
     String reason = arguments.get("reason").textValue();
     view.showResults(result, reason);
     player.endGame(result, reason);
-    JsonNode jsonResponse = serializeRecord(
-        new MessageJson("end-game", MAPPER.createObjectNode())
-    );
-    this.out.println(jsonResponse);
+    sendMessage("end-game", MAPPER.createObjectNode());
     try {
       server.close();
     } catch (IOException e) {
@@ -179,17 +155,15 @@ public class ProxyController implements Controller {
   }
 
   /**
-   * Converts a given record object to a JsonNode.
+   * Sends a response back to the server.
    *
-   * @param record the record to convert
-   * @return the JsonNode representation of the given record
-   * @throws IllegalArgumentException if the record could not be converted correctly
+   * @param methodName method-name
+   * @param arguments arguments
    */
-  private JsonNode serializeRecord(Record record) throws IllegalArgumentException {
-    try {
-      return MAPPER.convertValue(record, JsonNode.class);
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Given record cannot be serialized");
-    }
+  private void sendMessage(String methodName, JsonNode arguments) {
+    this.out.println(MAPPER.createObjectNode()
+        .put("method-name", methodName)
+        .set("arguments", arguments)
+    );
   }
 }
