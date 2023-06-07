@@ -1,6 +1,6 @@
 package cs3500.pa04.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import cs3500.pa04.json.CoordJson;
 
 /**
  * Record class representing one coordinate for the game.
@@ -8,9 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param x the x position
  * @param y the y position
  */
-public record Coord(
-    @JsonProperty("x") int x,
-    @JsonProperty("y") int y) {
+public record Coord(int x, int y) {
 
   /**
    * Provides a string representation for a coordinate.
@@ -20,5 +18,9 @@ public record Coord(
   @Override
   public String toString() {
     return String.format("(%s, %s)", x, y);
+  }
+
+  public CoordJson toJson() {
+    return new CoordJson(x, y);
   }
 }

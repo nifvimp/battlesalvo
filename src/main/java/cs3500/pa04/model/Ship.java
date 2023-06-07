@@ -1,26 +1,18 @@
 package cs3500.pa04.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import cs3500.pa04.json.ShipJson;
 import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  * Represents one ship on the board.
  * Includes state such as what sections are damaged and if it is sunk.
  */
-@JsonPropertyOrder({"coord", "length", "direction"})
-@JsonIncludeProperties({"coord", "length", "direction"})
 public class Ship {
-  @JsonProperty("length")
   private final ShipType type;
   private final boolean[] segmentDamage;
-  @JsonProperty("coord")
   private final Coord startingCoord;
-  @JsonProperty("direction")
   private final Orientation orientation;
   private boolean isSunk;
 
@@ -106,5 +98,14 @@ public class Ship {
       occupied.add(new Coord(x, y));
     }
     return occupied;
+  }
+
+  /**
+   * Converts this ship to a ShipJson.
+   *
+   * @return ShipJson of thisship
+   */
+  public ShipJson toJson() {
+    return new ShipJson(startingCoord.toJson(), type.getSize(), orientation);
   }
 }

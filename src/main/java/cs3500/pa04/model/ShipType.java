@@ -1,7 +1,5 @@
 package cs3500.pa04.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * Represents the types of ships in the game.
  */
@@ -30,7 +28,6 @@ public enum ShipType {
    *
    * @return the size
    */
-  @JsonValue
   public int getSize() {
     return this.size;
   }

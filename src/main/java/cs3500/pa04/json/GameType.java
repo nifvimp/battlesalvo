@@ -1,4 +1,4 @@
-package cs3500.pa04.controller;
+package cs3500.pa04.json;
 
 public enum GameType {
   SINGLE, MULTI
