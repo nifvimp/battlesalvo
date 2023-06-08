@@ -15,8 +15,10 @@ import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.ManualPlayer;
+import cs3500.pa04.model.Orientation;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.Ship;
+import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.IOException;
@@ -77,11 +79,16 @@ public class ProxyControllerTest {
 
   @Test
   public void testSetup() {
-    setupRequest(1, 1, 1, 1, 1, 1);
+    server.input(setupRequest(6, 6, 1, 2, 2, 1));
     controller.run();
     assertEquals(
         setupResponse(List.of(
-            // TODO: put test ships
+            new Ship(ShipType.CARRIER, new Coord(4, 0), Orientation.VERTICAL),
+            new Ship(ShipType.BATTLESHIP, new Coord(5, 0), Orientation.VERTICAL),
+            new Ship(ShipType.BATTLESHIP, new Coord(0, 0), Orientation.VERTICAL),
+            new Ship(ShipType.DESTROYER, new Coord(3, 0), Orientation.VERTICAL),
+            new Ship(ShipType.DESTROYER, new Coord(2, 1), Orientation.VERTICAL),
+            new Ship(ShipType.SUBMARINE, new Coord(1, 2), Orientation.VERTICAL)
         )), server.getLastReceived());
   }
 
@@ -89,15 +96,15 @@ public class ProxyControllerTest {
   public void testTakeShots() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
     server.input(emptyRequest("take-shots"));
-    controller.run();
     viewInput.input("""
         0 0
         0 1
         0 2
         0 3
         """);
+    controller.run();
     assertEquals(volleyMessage("take-shots", List.of(
-        new Coord(0, 1), new Coord(0, 2), new Coord(0, 3), new Coord(0, 4)
+        new Coord(0, 0), new Coord(0, 1), new Coord(0, 2), new Coord(0, 3)
     )), server.getLastReceived());
   }
 
@@ -105,11 +112,11 @@ public class ProxyControllerTest {
   public void testReportDamage() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
     server.input(volleyMessage("report-damage", List.of(
-
+        new Coord(0, 0), new Coord(0, 1), new Coord(0, 2), new Coord(0, 3)
     )));
     controller.run();
     assertEquals(volleyMessage("report-damage", List.of(
-        // TODO: put test coords
+        new Coord(0, 2)
     )), server.getLastReceived());
   }
 
@@ -117,12 +124,10 @@ public class ProxyControllerTest {
   public void testSuccessfulHits() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
     server.input(volleyMessage("successful-hits", List.of(
-        // TODO: put test coords
+        new Coord(0, 0), new Coord(0, 1)
     )));
     controller.run();
-    assertEquals(volleyMessage("successful-hits", List.of(
-        // TODO: put test coords
-    )), server.getLastReceived());
+    assertEquals(emptyRequest("successful-hits"), server.getLastReceived());
   }
 
   @Test
@@ -132,8 +137,8 @@ public class ProxyControllerTest {
     server.input(endGameMessage(GameResult.LOSE, "You Lost."));
     server.input(endGameMessage(GameResult.DRAW, "You Tied."));
     controller.run();
-    assertEquals(emptyRequest("end-game"), server.getLastReceived());
     assertEquals(2, server.getAllReceived().size());
+    assertEquals(emptyRequest("end-game"), server.getLastReceived());
     assertTrue(server.isClosed());
 
   }

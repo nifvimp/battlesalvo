@@ -77,6 +77,7 @@ public class Mocket extends Socket {
     try {
       json = MAPPER.readValue(lastReceived, JsonNode.class);
     } catch (JsonProcessingException e) {
+      e.printStackTrace();
       fail(String.format("failed parsing the received input '%s'.", lastReceived));
     }
     return json;

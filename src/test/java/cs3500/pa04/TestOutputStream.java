@@ -46,7 +46,7 @@ public class TestOutputStream extends OutputStream implements Appendable {
 
   @Override
   public String toString() {
-    return output.toString().replaceAll(String.valueOf((char) 13), "");
+    return output.toString();
   }
 
   /**
