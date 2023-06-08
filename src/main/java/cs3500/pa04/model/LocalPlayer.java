@@ -16,8 +16,10 @@ import java.util.Set;
 public abstract class LocalPlayer implements Player {
   protected Board board;
   private final BoardObserver observer;
-  private final List<Coord> lastTurnShots;
+  protected final List<Coord> lastTurnShots;
   private final Random random;
+  protected int width;
+  protected int height;
 
   /**
    * Creates a local player.
@@ -49,6 +51,8 @@ public abstract class LocalPlayer implements Player {
    */
   @Override
   public List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications) {
+    this.height = height;
+    this.width = width;
     List<Ship> ships = placeShips(height, width, specifications);
     board = new Board(height, width, ships);
     observer.registerBoard(name(), board);
@@ -137,6 +141,7 @@ public abstract class LocalPlayer implements Player {
   @Override
   public List<Coord> takeShots() {
     lastTurnShots.addAll(loadShots());
+    System.out.println(lastTurnShots);
     return lastTurnShots;
   }
 
@@ -171,5 +176,6 @@ public abstract class LocalPlayer implements Player {
   @Override
   public void endGame(GameResult result, String reason) {
     successfulHits(Collections.emptyList());
+
   }
 }

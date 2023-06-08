@@ -66,7 +66,21 @@ public class ProxyController implements Controller {
         MessageJson message = parser.readValueAs(MessageJson.class);
         delegateMessage(message);
       }
-      System.out.println("testing: server closed");
+    } catch (IOException e) {
+      e.printStackTrace();
+      // Disconnected from server or parsing exception
+    }
+  }
+
+  @Override
+  public void run() {
+    try {
+      JsonParser parser = MAPPER.getFactory().createParser(this.in);
+      while (!this.server.isClosed()) {
+        MessageJson message = parser.readValueAs(MessageJson.class);
+        delegateMessage(message);
+      }
+      return observer.getBoard(player.name()).hitRate();
     } catch (IOException e) {
       e.printStackTrace();
       // Disconnected from server or parsing exception
@@ -131,6 +145,7 @@ public class ProxyController implements Controller {
             serializeRecord(response))
     );
     this.out.println(jsonResponse);
+    System.out.println(jsonResponse);
   }
 
   private void handleReportDamage(JsonNode arguments) {
