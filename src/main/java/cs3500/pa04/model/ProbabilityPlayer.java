@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class ProbabilityPlayer extends LocalPlayer {
-  private static final int SIMULATION_ATTEMPTS = 1000000;
+  private static final int MILLISECONDS_THREAD_INTERRUPT = 1000;
+  private static final int THREADS = 50;
   private double[][] probabilityDistribution;
   private Map<ShipType, Integer> specifications;
   private Map<ShipType, List<Ship>> shipLocations;
@@ -21,6 +23,7 @@ public class ProbabilityPlayer extends LocalPlayer {
   private final Set<Coord> hits;
   private Random random;
   private long count;
+  private int runs;
 
   public ProbabilityPlayer(BoardObserver observer) {
     super(observer);
@@ -48,9 +51,26 @@ public class ProbabilityPlayer extends LocalPlayer {
     this.count = 0;
     getPossibleShipLocations();
     getIncompatibleLocations();
-    for (int i = 0; i < SIMULATION_ATTEMPTS; i++) {
-      simulateShipPlacement();
+
+    List<Thread> threads = new ArrayList<>();
+    for (int i = 0; i < THREADS; i++) {
+      Thread thread = new Simulation();
+      thread.start();
+      threads.add(thread);
     }
+    try {
+      TimeUnit.MILLISECONDS.sleep(MILLISECONDS_THREAD_INTERRUPT);
+    } catch (InterruptedException ignored) {
+      // An empty catch block
+    }
+    for (Thread thread : threads) {
+      thread.interrupt();
+    }
+    System.out.println("Attempts: " + runs);
+    System.out.println("Sims Complete: " + count);
+//    for (int i = 0; i < SIMULATION_ATTEMPTS; i++) {
+//      simulateShipPlacement();
+//    }
     for (double[] row : probabilityDistribution) {
       row = Arrays.stream(row).map(num -> (num / count) * 100).toArray();
       System.out.println(Arrays.stream(row)
@@ -59,7 +79,6 @@ public class ProbabilityPlayer extends LocalPlayer {
     }
   }
 
-  // TODO: Possible to multi-thread for each row or cell or something
   private void getPossibleShipLocations() {
     for (ShipType shipType : specifications.keySet()) {
       List<Ship> possible = new ArrayList<>();
@@ -85,7 +104,6 @@ public class ProbabilityPlayer extends LocalPlayer {
     }
   }
 
-  // TODO: can multi-thread for each ship as a thread (1 for loop instead of 2)
   private void getIncompatibleLocations() {
     List<Ship> ships = new ArrayList<>();
     for (List<Ship> possible : shipLocations.values()) {
@@ -101,6 +119,17 @@ public class ProbabilityPlayer extends LocalPlayer {
       }
       conflicts.remove(ship);
       incompatible.put(ship, conflicts);
+    }
+  }
+
+  // TODO: extract inner class outside
+  private class Simulation extends Thread {
+    @Override
+    public void run() {
+      while(!this.isInterrupted()) {
+        runs++;
+        simulateShipPlacement();
+      }
     }
   }
 
