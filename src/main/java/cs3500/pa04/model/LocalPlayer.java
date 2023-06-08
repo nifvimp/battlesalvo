@@ -51,7 +51,7 @@ public abstract class LocalPlayer implements Player {
   public List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications) {
     List<Ship> ships = placeShips(height, width, specifications);
     board = new Board(height, width, ships);
-    observer.registerBoard(name(), board);
+    observer.registerBoard(this, board);
     return ships;
   }
 

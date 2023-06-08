@@ -21,6 +21,8 @@ public class BoardObserverTest {
   private Board p2Board;
   private GameView testView;
   private TestOutputStream testOut;
+  private Player p1;
+  private Player p2;
 
   /**
    * Sets up test output and players to test the observer.
@@ -34,7 +36,9 @@ public class BoardObserverTest {
     p2Board = new Board(5, 5, List.of(
         new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.VERTICAL))
     );
-    observer.registerBoard("player1", p1Board);
+    p1 = new ArtificialPlayer(observer);
+    p2 = new ArtificialPlayer(observer);
+    observer.registerBoard(p1, p1Board);
     testOut = new TestOutputStream();
     testView = new TerminalView(testOut.toPrintStream(), new StringReader(""));
   }
@@ -44,9 +48,9 @@ public class BoardObserverTest {
    */
   @Test
   public void registerBoard() {
-    assertNull(observer.getBoard("player2"));
-    observer.registerBoard("player2", p2Board);
-    assertEquals(p1Board, observer.getBoard("player2"));
+    assertNull(observer.getBoard(p2));
+    observer.registerBoard(p2, p2Board);
+    assertEquals(p1Board, observer.getBoard(p2));
   }
 
 
@@ -55,11 +59,11 @@ public class BoardObserverTest {
    */
   @Test
   public void getBoard() {
-    assertEquals(p1Board, observer.getBoard("player1"));
+    assertEquals(p1Board, observer.getBoard(p1));
     p1Board.takeDamage(new Coord(0, 0));
     p1Board.takeDamage(new Coord(1, 1));
     p1Board.takeDamage(new Coord(2, 2));
-    assertEquals(p1Board, observer.getBoard("player1"));
+    assertEquals(p1Board, observer.getBoard(p1));
     String expected = """
         Your Board:
         \tX - - - -
@@ -68,7 +72,7 @@ public class BoardObserverTest {
         \t- - - - -
         \t- - - - -
         """;
-    testView.displayPlayerBoard(observer.getBoard("player1").getPlayerBoard());
+    testView.displayPlayerBoard(observer.getBoard(p1).getPlayerBoard());
     assertEquals(expected, testOut.toString());
   }
 }

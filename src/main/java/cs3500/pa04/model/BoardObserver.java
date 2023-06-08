@@ -7,7 +7,7 @@ import java.util.Map;
  * Observer of the boards in a game.
  */
 public class BoardObserver {
-  private final Map<String, Board> gameBoards;
+  private final Map<Player, Board> gameBoards;
 
   public BoardObserver() {
     gameBoards = new HashMap<>();
@@ -19,7 +19,7 @@ public class BoardObserver {
    * @param player      name to register the board under
    * @param playerBoard the board to register
    */
-  public void registerBoard(String player, Board playerBoard) {
+  public void registerBoard(Player player, Board playerBoard) {
     gameBoards.put(player, playerBoard);
   }
 
@@ -31,7 +31,7 @@ public class BoardObserver {
    * @param player name of the player
    * @return player board of player
    */
-  public Board getBoard(String player) {
+  public Board getBoard(Player player) {
     return gameBoards.get(player);
   }
 

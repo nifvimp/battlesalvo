@@ -1,6 +1,9 @@
 package cs3500.pa04.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -166,7 +169,7 @@ public class ProxyControllerTest {
   private static JsonNode setupResponse(List<Ship> ships) {
     return serializeRecord(
         new MessageJson("setup",
-           serializeRecord(new FleetJson(ships.stream().map(Ship::toJson).toList()))
+            serializeRecord(new FleetJson(ships.stream().map(Ship::toJson).toList()))
         ));
   }
 
@@ -178,9 +181,9 @@ public class ProxyControllerTest {
   private static JsonNode endGameMessage(GameResult result, String reason) {
     return serializeRecord(
         new MessageJson("end-game",
-        MAPPER.createObjectNode()
-            .put("result", result.name())
-            .put("reason", reason)
+            MAPPER.createObjectNode()
+                .put("result", result.name())
+                .put("reason", reason)
         ));
   }
 

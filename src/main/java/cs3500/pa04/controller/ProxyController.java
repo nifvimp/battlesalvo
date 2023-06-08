@@ -119,8 +119,8 @@ public class ProxyController implements Controller {
   }
 
   private void handleTakeShots() {
-    this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
-    this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
+    this.view.displayOpponentBoard(observer.getBoard(player).getOpponentKnowledge());
+    this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
     List<Coord> shots = player.takeShots();
     VolleyJson response = new VolleyJson(shots.stream().map(Coord::toJson).toList());
     JsonNode jsonResponse = serializeRecord(
@@ -157,8 +157,8 @@ public class ProxyController implements Controller {
   }
 
   private void endGame(JsonNode arguments) {
-    this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
-    this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
+    this.view.displayOpponentBoard(observer.getBoard(player).getOpponentKnowledge());
+    this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
     GameResult result = GameResult.valueOf(arguments.get("result").textValue());
     String reason = arguments.get("reason").textValue();
     view.showResults(result, reason);
