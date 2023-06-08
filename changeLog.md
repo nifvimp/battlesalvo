@@ -32,3 +32,7 @@
 - Added view to proxyController
 
 # Improving Battle Salvo AI
+- [Made Ai smart when encountering a hit]
+  - Added TargetingLine class to go out in a line from a known hit until a miss occurs
+  - Starts in all 4 directions initially
+  - Efficiently sinks opponent ship

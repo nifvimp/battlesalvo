@@ -9,16 +9,13 @@ public class TargetingLine {
 
   private Coord lastShot;
 
-  private int offsetX;
+  private final int offsetX;
 
-  private int offsetY;
+  private final int offsetY;
 
-  private int width;
+  private final int width;
 
-  private int height;
-
-  private BoardObserver observer;
-
+  private final int height;
   private boolean finished = false;
 
     public TargetingLine(Coord startingCoord, int offsetX, int offsetY, Board board) {

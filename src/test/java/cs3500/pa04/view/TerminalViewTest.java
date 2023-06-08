@@ -1,18 +1,16 @@
-package pa04.view;
+package cs3500.pa04.view;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cs3500.pa04.TestInputStream;
+import cs3500.pa04.TestOutputStream;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.ShipType;
-import cs3500.pa04.view.GameView;
-import cs3500.pa04.view.TerminalView;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestInputStream;
-import pa04.TestOutputStream;
 
 /**
  * Tests the TerminalView class.

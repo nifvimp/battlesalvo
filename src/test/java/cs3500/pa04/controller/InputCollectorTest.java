@@ -1,9 +1,10 @@
-package pa04.controller;
+package cs3500.pa04.controller;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.controller.UserCommunicator;
+import cs3500.pa04.TestInputStream;
+import cs3500.pa04.TestOutputStream;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
@@ -14,8 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestInputStream;
-import pa04.TestOutputStream;
 
 /**
  * Tests the InputCollector class.
@@ -45,7 +44,11 @@ public class InputCollectorTest {
     testIn.input("6 8");
     Coord size = collector.requestBoardDimensions();
     assertEquals(new Coord(6, 8), size);
-    assertEquals("Please enter a valid height and width below:\n", testOut.toString());
+    assertEquals("""
+        Boards can be between sizes 6 and 15, and dimensions do not need to match.
+        Please enter a valid height and width below:
+        ------------------------------------------------------
+        """, testOut.toString(), "");
   }
 
   /**
@@ -67,11 +70,16 @@ public class InputCollectorTest {
         6 8
         """);
     Coord size = collector.requestBoardDimensions();
-    String invalid = "The dimensions you entered were invalid dimensions. Please remember that "
-        + "the height and width of the game must be in the range (6, 15), inclusive.\n";
-    String prompt = "Please enter a valid height and width below:\n";
-    assertEquals(new Coord(6, 8), size);
+    String invalid = "Uh Oh! You've entered invalid dimensions. Please remember that the "
+        + "height and width of the game must be in the range (6, 15), inclusive."
+        + "\n------------------------------------------------------\n";
+    String prompt = """
+        Boards can be between sizes 6 and 15, and dimensions do not need to match.
+        Please enter a valid height and width below:
+        ------------------------------------------------------
+        """;
     assertEquals((prompt + invalid).repeat(10) + prompt, testOut.toString());
+    assertEquals(new Coord(6, 8), size);
   }
 
   /**
@@ -85,6 +93,8 @@ public class InputCollectorTest {
         ShipType.SUBMARINE, 1), specifications);
     assertEquals("""
         Please enter your fleet in the order [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE].
+        Remember, your fleet may not exceed size 6.
+        ------------------------------------------------------
         """, testOut.toString());
   }
 
@@ -110,10 +120,14 @@ public class InputCollectorTest {
             ShipType.DESTROYER, 2,
             ShipType.SUBMARINE, 1),
         specifications);
-    String invalid = "The fleet you entered is invalid. Remember, your fleet must of size 6 "
-        + "and have at least one of each ship type.\n";
-    String prompt = "Please enter your fleet in the order [CARRIER, BATTLESHIP, DESTROYER, "
-        + "SUBMARINE].\n";
+    String invalid = """
+        Uh Oh! You've entered invalid fleet sizes.
+        """;
+    String prompt = """
+        Please enter your fleet in the order [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE].
+        Remember, your fleet may not exceed size 6.
+        ------------------------------------------------------
+        """;
     assertEquals((prompt + invalid).repeat(7) + prompt, testOut.toString());
   }
 
@@ -132,9 +146,11 @@ public class InputCollectorTest {
     List<Coord> input = collector.requestShots(5);
     assertEquals(
         Set.of(new Coord(0, 0), new Coord(1, 3),
-              new Coord(3, 2), new Coord(5, 4),
-              new Coord(5, 5)), new HashSet<>(input));
-    assertEquals("Please Enter 5 Shots:\n", testOut.toString());
+            new Coord(3, 2), new Coord(5, 4),
+            new Coord(5, 5)), new HashSet<>(input));
+    assertEquals("""
+        Please enter 5 shots:
+        """, testOut.toString());
   }
 
   /**
@@ -155,13 +171,16 @@ public class InputCollectorTest {
     List<Coord> input = collector.requestShots(2);
     assertEquals(Set.of(new Coord(0, 0), new Coord(1, 1)), new HashSet<>(input));
     assertEquals("""
-        Please Enter 2 Shots:
-        Some of the shots you entered were either invalid, out of bounds, or has already been shot.
-        Please Enter 2 Shots:
-        Some of the shots you entered were either invalid, out of bounds, or has already been shot.
-        Please Enter 2 Shots:
-        Some of the shots you entered were either invalid, out of bounds, or has already been shot.
-        Please Enter 2 Shots:
+        Please enter 2 shots:
+        ------------------------------------------------------
+        Please try again. Shots must be a valid coordinate on the board.
+        Please enter 2 shots:
+        ------------------------------------------------------
+        Please try again. Shots must be a valid coordinate on the board.
+        Please enter 2 shots:
+        ------------------------------------------------------
+        Please try again. Shots must be a valid coordinate on the board.
+        Please enter 2 shots:
         """, testOut.toString());
   }
 
@@ -172,7 +191,9 @@ public class InputCollectorTest {
   public void testSignalInvalidShots() {
     UserCommunicator collector = new UserCommunicator(testView);
     collector.signalInvalidShots();
-    assertEquals("Some of the shots you entered were either invalid, out of bounds, or has "
-        + "already been shot.\n", testOut.toString());
+    assertEquals("""
+        ------------------------------------------------------
+        Please try again. Shots must be a valid coordinate on the board.
+        """, testOut.toString());
   }
 }

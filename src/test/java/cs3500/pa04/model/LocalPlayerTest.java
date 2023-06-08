@@ -1,12 +1,8 @@
-package pa04.model;
+package cs3500.pa04.model;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.Coord;
-import cs3500.pa04.model.LocalPlayer;
-import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;
@@ -15,7 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestOutputStream;
+import cs3500.pa04.TestOutputStream;
 
 /**
  * Abstract test class for Local Players.

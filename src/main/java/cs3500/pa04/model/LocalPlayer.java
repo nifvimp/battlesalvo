@@ -16,7 +16,7 @@ import java.util.Set;
 public abstract class LocalPlayer implements Player {
   protected Board board;
   private final BoardObserver observer;
-  protected final List<Coord> lastTurnShots;
+  private final List<Coord> lastTurnShots;
   private final Random random;
   protected int width;
   protected int height;
@@ -55,7 +55,7 @@ public abstract class LocalPlayer implements Player {
     this.width = width;
     List<Ship> ships = placeShips(height, width, specifications);
     board = new Board(height, width, ships);
-    observer.registerBoard(name(), board);
+    observer.registerBoard(this, board);
     return ships;
   }
 
@@ -141,7 +141,6 @@ public abstract class LocalPlayer implements Player {
   @Override
   public List<Coord> takeShots() {
     lastTurnShots.addAll(loadShots());
-    System.out.println(lastTurnShots);
     return lastTurnShots;
   }
 
@@ -176,6 +175,15 @@ public abstract class LocalPlayer implements Player {
   @Override
   public void endGame(GameResult result, String reason) {
     successfulHits(Collections.emptyList());
-
+    int hits = 0;
+    // TODO: remove
+    for (char[] row : board.getOpponentKnowledge()) {
+      for (char c : row) {
+        hits += (c == 'H') ? 1 : 0;
+      }
+    }
+    System.out.println("hit rate: "
+        + (double) hits / ((height * width)
+        - board.validShots().size()));
   }
 }

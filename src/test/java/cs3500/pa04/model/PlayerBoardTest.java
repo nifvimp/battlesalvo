@@ -1,15 +1,10 @@
-package pa04.model;
+package cs3500.pa04.model;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import cs3500.pa04.model.Board;
-import cs3500.pa04.model.Coord;
-import cs3500.pa04.model.Orientation;
-import cs3500.pa04.model.Ship;
-import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;
@@ -18,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestOutputStream;
+import cs3500.pa04.TestOutputStream;
 
 /**
  * Tests the PlayerBoard class.

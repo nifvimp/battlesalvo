@@ -1,12 +1,9 @@
-package pa04.controller;
+package cs3500.pa04.controller;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.controller.Controller;
-import cs3500.pa04.controller.LocalController;
-import cs3500.pa04.controller.UserCommunicator;
-import cs3500.pa04.model.ArtificialPlayer;
+import cs3500.pa04.model.RandomPlayer;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.ManualPlayer;
 import cs3500.pa04.model.Player;
@@ -16,7 +13,7 @@ import java.io.StringReader;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestOutputStream;
+import cs3500.pa04.TestOutputStream;
 
 
 /**
@@ -64,7 +61,7 @@ public class LocalControllerTest {
         """));
     BoardObserver observer = new BoardObserver();
     Player player1 = new ManualPlayer(observer, new UserCommunicator(view), new Random(SEED));
-    Player player2 = new ArtificialPlayer(observer, new Random(SEED));
+    Player player2 = new RandomPlayer(observer, new Random(SEED));
     controller = new LocalController(player1, player2, view, new UserCommunicator(view), observer);
   }
 

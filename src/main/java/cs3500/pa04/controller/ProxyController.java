@@ -30,6 +30,8 @@ import java.util.Map;
  */
 public class ProxyController implements Controller {
   private static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final GameType GAME_TYPE = GameType.SINGLE;
+  private static final String USERNAME = "nifvimp";
   private final BoardObserver observer;
   private final PrintStream out;
   private final InputStream in;
@@ -41,7 +43,7 @@ public class ProxyController implements Controller {
   // TODO: don't throw
 
   /**
-   * Construct an proxy controller.
+   * Construct a proxy controller.
    *
    * @param server the socket connection to the server
    * @param player the instance of the player
@@ -51,7 +53,6 @@ public class ProxyController implements Controller {
       throws IOException {
     this.server = server;
     this.out = new PrintStream(server.getOutputStream());
-    //this.out = new PrintStream(System.out);
     this.in = server.getInputStream();
     this.observer = observer;
     this.player = player;
@@ -66,26 +67,9 @@ public class ProxyController implements Controller {
         MessageJson message = parser.readValueAs(MessageJson.class);
         delegateMessage(message);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException ignored) {
       // Disconnected from server or parsing exception
     }
-  }
-
-  @Override
-  public double[] run(int temp) {
-    try {
-      JsonParser parser = MAPPER.getFactory().createParser(this.in);
-      while (!this.server.isClosed()) {
-        MessageJson message = parser.readValueAs(MessageJson.class);
-        delegateMessage(message);
-      }
-      return observer.getBoard(player.name()).hitRate();
-    } catch (IOException e) {
-      e.printStackTrace();
-      // Disconnected from server or parsing exception
-    }
-    return null;
   }
 
   /**
@@ -111,8 +95,8 @@ public class ProxyController implements Controller {
   private void handleJoin() {
     MessageJson response = new MessageJson(
         "join", MAPPER.createObjectNode()
-        .put("name", "nifvimp")
-        .put("game-type", GameType.SINGLE.name())
+        .put("name", USERNAME)
+        .put("game-type", GAME_TYPE.name())
     );
     JsonNode jsonResponse = serializeRecord(response);
     view.greet();
@@ -137,8 +121,8 @@ public class ProxyController implements Controller {
   }
 
   private void handleTakeShots() {
-    this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
-    this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
+    this.view.displayOpponentBoard(observer.getBoard(player).getOpponentKnowledge());
+    this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
     List<Coord> shots = player.takeShots();
     VolleyJson response = new VolleyJson(shots.stream().map(Coord::toJson).toList());
     JsonNode jsonResponse = serializeRecord(
@@ -146,7 +130,6 @@ public class ProxyController implements Controller {
             serializeRecord(response))
     );
     this.out.println(jsonResponse);
-    System.out.println(jsonResponse);
   }
 
   private void handleReportDamage(JsonNode arguments) {
@@ -176,8 +159,8 @@ public class ProxyController implements Controller {
   }
 
   private void endGame(JsonNode arguments) {
-    this.view.displayOpponentBoard(observer.getBoard(player.name()).getOpponentKnowledge());
-    this.view.displayPlayerBoard(observer.getBoard(player.name()).getPlayerBoard());
+    this.view.displayOpponentBoard(observer.getBoard(player).getOpponentKnowledge());
+    this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
     GameResult result = GameResult.valueOf(arguments.get("result").textValue());
     String reason = arguments.get("reason").textValue();
     view.showResults(result, reason);
@@ -202,7 +185,7 @@ public class ProxyController implements Controller {
    * @return the JsonNode representation of the given record
    * @throws IllegalArgumentException if the record could not be converted correctly
    */
-  private JsonNode serializeRecord(Record record) throws IllegalArgumentException {
+  private static JsonNode serializeRecord(Record record) throws IllegalArgumentException {
     try {
       return MAPPER.convertValue(record, JsonNode.class);
     } catch (IllegalArgumentException e) {

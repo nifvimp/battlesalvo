@@ -1,16 +1,10 @@
-package pa04.model;
+package cs3500.pa04.model;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cs3500.pa04.TestOutputStream;
 import cs3500.pa04.controller.UserCommunicator;
-import cs3500.pa04.model.ArtificialPlayer;
-import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.GameModel;
-import cs3500.pa04.model.GameModelImpl;
-import cs3500.pa04.model.ManualPlayer;
-import cs3500.pa04.model.Player;
-import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;
@@ -18,7 +12,6 @@ import java.util.Map;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pa04.TestOutputStream;
 
 /**
  * Tests the GameModelImpl class.
@@ -52,7 +45,7 @@ class GameModelImplTest {
         """));
     observer = new BoardObserver();
     player1 = new ManualPlayer(observer, new UserCommunicator(view), new Random(SEED));
-    player2 = new ArtificialPlayer(observer, new Random(SEED));
+    player2 = new RandomPlayer(observer, new Random(SEED));
     model = new GameModelImpl(observer, player1, player2);
     model.setup(6, 6, specifications);
   }
@@ -62,8 +55,8 @@ class GameModelImplTest {
    */
   @Test
   public void testSetup() {
-    view.displayPlayerBoard(observer.getBoard(player1.name()).getPlayerBoard());
-    view.displayPlayerBoard(observer.getBoard(player2.name()).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player1).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player2).getPlayerBoard());
     // state of both player boards are the same because they use the same seed for their random
     assertEquals("""
             Your Board:
@@ -120,8 +113,8 @@ class GameModelImplTest {
   @Test
   void volley() {
     model.volley();
-    view.displayPlayerBoard(observer.getBoard(player1.name()).getPlayerBoard());
-    view.displayPlayerBoard(observer.getBoard(player2.name()).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player1).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player2).getPlayerBoard());
     assertEquals("""
         Please Enter 6 Shots:
         Your Board:

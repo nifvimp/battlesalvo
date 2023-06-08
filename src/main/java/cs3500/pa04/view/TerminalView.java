@@ -135,13 +135,11 @@ public class TerminalView implements GameView {
 
   @Override
   public void promptShots(int numShots) {
-    showMessage(String.format("""
-        Please enter %s
-        """, numShots + (numShots > 1 ? " shots:" : " shot:")
-    ));
+    showMessage(
+        String.format("Please enter %s", numShots + (numShots > 1 ? " shots:" : " shot:"))
+    );
   }
 
-  // TODO: change board to allow repeats
   @Override
   public void invalidShots() {
     showMessage("""

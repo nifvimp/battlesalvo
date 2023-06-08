@@ -1,11 +1,8 @@
-package pa04.model;
+package cs3500.pa04.model;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.model.ArtificialPlayer;
-import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.LocalPlayer;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class ArtificialPlayerTest extends LocalPlayerTest {
   @Override
   protected LocalPlayer makeTestPlayer(BoardObserver observer, Random random) {
-    return new ArtificialPlayer(observer, random);
+    return new RandomPlayer(observer, random);
   }
 
   /**

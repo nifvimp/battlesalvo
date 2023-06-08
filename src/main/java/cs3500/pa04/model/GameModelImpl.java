@@ -33,12 +33,12 @@ public class GameModelImpl implements GameModel {
 
   @Override
   public char[][] getPlayerBoard() {
-    return observer.getBoard(player.name()).getPlayerBoard();
+    return observer.getBoard(player).getPlayerBoard();
   }
 
   @Override
   public char[][] getOpponentBoard() {
-    return observer.getBoard(player.name()).getOpponentKnowledge();
+    return observer.getBoard(player).getOpponentKnowledge();
   }
 
   @Override
@@ -53,8 +53,8 @@ public class GameModelImpl implements GameModel {
 
   @Override
   public GameResult getGameResult() {
-    boolean playerShipsSunk = observer.getBoard(player.name()).shipsLeft() <= 0;
-    boolean opponentShipsSunk = observer.getBoard(opponent.name()).shipsLeft() <= 0;
+    boolean playerShipsSunk = observer.getBoard(player).shipsLeft() <= 0;
+    boolean opponentShipsSunk = observer.getBoard(opponent).shipsLeft() <= 0;
     if (playerShipsSunk && opponentShipsSunk) {
       result = GameResult.DRAW;
     } else if (playerShipsSunk) {
