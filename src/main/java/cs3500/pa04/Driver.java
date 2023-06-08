@@ -31,15 +31,25 @@ public class Driver {
       Player opponent = new ArtificialPlayer(observer);
       controller = new LocalController(player, opponent, view, requester, observer);
     } else {
-      try {
-        Socket socket = new Socket("0.0.0.0", 35001);
-        controller = new ProxyController(socket, new ArtificialPlayer(observer), view, observer);
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.err.println("There was an error connecting to the server.");
-        return;
+      double playerTotal = 0;
+      double opponentTotal = 0;
+      for (int i = 0; i < 5000; i++) {
+        try {
+          Socket socket = new Socket("0.0.0.0", 35001);
+          controller = new ProxyController(socket, new ArtificialPlayer(observer), view, observer);
+          double[] thing = controller.run(1);
+          playerTotal += thing[0];
+          opponentTotal += thing[1];
+          socket.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+          System.err.println("There was an error connecting to the server.");
+          return;
+        }
       }
+      System.out.println("Player hit rate: " + playerTotal / 200);
+      System.out.println("Opponent hit rate: " + opponentTotal / 200);
     }
-    controller.run();
+//    controller.run();
   }
 }

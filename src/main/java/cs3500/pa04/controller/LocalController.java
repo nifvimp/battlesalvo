@@ -56,6 +56,11 @@ public class LocalController implements Controller {
     endGame(model.getGameResult());
   }
 
+  @Override
+  public double[] run(int temp) {
+    return null;
+  }
+
   /**
    * Chooses a reason for why the game ended based on the result
    * and runs end game logic.

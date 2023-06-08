@@ -10,4 +10,11 @@ public interface Controller {
    * Stars and controls the game flow.
    */
   void run();
+
+  /**
+   * Runs the game.
+   * Stars and controls the game flow.
+   */
+  @Deprecated
+  double[] run(int temp);
 }

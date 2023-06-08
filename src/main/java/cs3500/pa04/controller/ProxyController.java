@@ -73,7 +73,7 @@ public class ProxyController implements Controller {
   }
 
   @Override
-  public void run() {
+  public double[] run(int temp) {
     try {
       JsonParser parser = MAPPER.getFactory().createParser(this.in);
       while (!this.server.isClosed()) {
@@ -85,6 +85,7 @@ public class ProxyController implements Controller {
       e.printStackTrace();
       // Disconnected from server or parsing exception
     }
+    return null;
   }
 
   /**
@@ -185,6 +186,7 @@ public class ProxyController implements Controller {
         new MessageJson("end-game", MAPPER.createObjectNode())
     );
     this.out.println(jsonResponse);
+    observer.getBoard(player.name()).hitRate();
     try {
       server.close();
     } catch (IOException e) {

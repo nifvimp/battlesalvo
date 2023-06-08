@@ -113,4 +113,29 @@ public class Board {
     ships.removeIf(Ship::isSunk);
     return ships.size();
   }
+
+  @Deprecated
+  public double[] hitRate() {
+    int total = width * height;
+    int hitCountOnOpponent = 0;
+    for (char[] row : opponentKnowledge) {
+      for (char c : row) {
+        if (c == 'S' || c == 'H') {
+          hitCountOnOpponent++;
+        }
+      }
+    }
+    int hitCountOnPlayer = 0;
+    for (Cell[] row : playerBoard) {
+      for (Cell c : row) {
+        if (c.getCharacter() == 'S' || c.getCharacter() == 'H') {
+          hitCountOnPlayer++;
+        }
+      }
+    }
+    return new double[] {
+        ((double) hitCountOnOpponent / total) * 100,
+        ((double) hitCountOnPlayer / total) * 100
+    };
+  }
 }
