@@ -141,7 +141,6 @@ public abstract class LocalPlayer implements Player {
   @Override
   public List<Coord> takeShots() {
     lastTurnShots.addAll(loadShots());
-    System.out.println(lastTurnShots);
     return lastTurnShots;
   }
 
@@ -176,5 +175,15 @@ public abstract class LocalPlayer implements Player {
   @Override
   public void endGame(GameResult result, String reason) {
     successfulHits(Collections.emptyList());
+    int hits = 0;
+    // TODO: remove
+    for (char[] row : board.getOpponentKnowledge()) {
+      for (char c : row) {
+        hits += (c == 'H') ? 1 : 0;
+      }
+    }
+    System.out.println("hit rate: "
+        + (double) hits / ((height * width)
+        - board.validShots().size()));
   }
 }

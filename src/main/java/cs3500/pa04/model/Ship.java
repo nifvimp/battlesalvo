@@ -3,6 +3,7 @@ package cs3500.pa04.model;
 
 import cs3500.pa04.json.ShipJson;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -107,5 +108,22 @@ public class Ship {
    */
   public ShipJson toJson() {
     return new ShipJson(startingCoord.toJson(), type.getSize(), orientation);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Ship ship)) {
+      return false;
+    }
+    return type == ship.type && startingCoord.equals(ship.startingCoord) &&
+        orientation == ship.orientation;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(type, startingCoord, orientation);
   }
 }
