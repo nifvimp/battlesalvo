@@ -72,6 +72,22 @@ public class ProxyController implements Controller {
     }
   }
 
+  @Override
+  public double[] run(int temp) {
+    try {
+      JsonParser parser = MAPPER.getFactory().createParser(this.in);
+      while (!this.server.isClosed()) {
+        MessageJson message = parser.readValueAs(MessageJson.class);
+        delegateMessage(message);
+      }
+      return observer.getBoard(player).hitRate();
+    } catch (IOException e) {
+      e.printStackTrace();
+      // Disconnected from server or parsing exception
+    }
+    return null;
+  }
+
   /**
    * Determines the type of request the server has sent and delegates to the
    * corresponding helper method with the message arguments.
