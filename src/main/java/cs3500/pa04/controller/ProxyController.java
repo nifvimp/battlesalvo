@@ -64,7 +64,7 @@ public class ProxyController implements Controller {
         MessageJson message = parser.readValueAs(MessageJson.class);
         delegateMessage(message);
       }
-      System.out.println("testing: server closed");
+      System.err.println("testing: server closed");
     } catch (IOException ignored) {
       // Disconnected from server or parsing exception
     }

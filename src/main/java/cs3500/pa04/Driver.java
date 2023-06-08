@@ -6,6 +6,7 @@ import cs3500.pa04.controller.ProxyController;
 import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.model.ArtificialPlayer;
 import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.ManualPlayer;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
@@ -24,12 +25,12 @@ public class Driver {
   public static void main(String[] args) {
     GameView view = new TerminalView();
     BoardObserver observer = new BoardObserver();
-    UserCommunicator requester = new UserCommunicator(view);
+    UserCommunicator communicator = new UserCommunicator(view);
     Controller controller;
     if (args.length == 0) {
-      Player player = new ArtificialPlayer(observer);
+      Player player = new ManualPlayer(observer, communicator);
       Player opponent = new ArtificialPlayer(observer);
-      controller = new LocalController(player, opponent, view, requester, observer);
+      controller = new LocalController(player, opponent, view, communicator, observer);
     } else {
       try {
         Socket socket = new Socket("0.0.0.0", 35001);

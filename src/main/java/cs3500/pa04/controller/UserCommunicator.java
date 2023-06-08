@@ -63,6 +63,9 @@ public class UserCommunicator {
       int[] input = numExtractor(shipTypes.length, view.getFleet(fleetSize));
       int currSize = 0;
       for (int i = 0; i < shipTypes.length; i++) {
+        if (input[i] <= 0) {
+          throw new IllegalArgumentException("There must be at least 1 of each ship type.");
+        }
         specification.put(shipTypes[i], input[i]);
         currSize += input[i];
       }
