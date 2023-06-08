@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class ArtificialPlayerTest extends LocalPlayerTest {
   @Override
   protected LocalPlayer makeTestPlayer(BoardObserver observer, Random random) {
-    return new ArtificialPlayer(observer, random);
+    return new RandomPlayer(observer, random);
   }
 
   /**

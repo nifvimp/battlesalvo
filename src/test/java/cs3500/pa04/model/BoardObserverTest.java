@@ -36,8 +36,8 @@ public class BoardObserverTest {
     p2Board = new Board(5, 5, List.of(
         new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.VERTICAL))
     );
-    p1 = new ArtificialPlayer(observer);
-    p2 = new ArtificialPlayer(observer);
+    p1 = new RandomPlayer(observer);
+    p2 = new RandomPlayer(observer);
     observer.registerBoard(p1, p1Board);
     testOut = new TestOutputStream();
     testView = new TerminalView(testOut.toPrintStream(), new StringReader(""));

@@ -45,7 +45,7 @@ class GameModelImplTest {
         """));
     observer = new BoardObserver();
     player1 = new ManualPlayer(observer, new UserCommunicator(view), new Random(SEED));
-    player2 = new ArtificialPlayer(observer, new Random(SEED));
+    player2 = new RandomPlayer(observer, new Random(SEED));
     model = new GameModelImpl(observer, player1, player2);
     model.setup(6, 6, specifications);
   }
@@ -55,8 +55,8 @@ class GameModelImplTest {
    */
   @Test
   public void testSetup() {
-    view.displayPlayerBoard(observer.getBoard(player1.name()).getPlayerBoard());
-    view.displayPlayerBoard(observer.getBoard(player2.name()).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player1).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player2).getPlayerBoard());
     // state of both player boards are the same because they use the same seed for their random
     assertEquals("""
             Your Board:
@@ -113,8 +113,8 @@ class GameModelImplTest {
   @Test
   void volley() {
     model.volley();
-    view.displayPlayerBoard(observer.getBoard(player1.name()).getPlayerBoard());
-    view.displayPlayerBoard(observer.getBoard(player2.name()).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player1).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(player2).getPlayerBoard());
     assertEquals("""
         Please Enter 6 Shots:
         Your Board:
