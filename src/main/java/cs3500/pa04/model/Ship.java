@@ -54,6 +54,7 @@ public class Ship {
    * Marks a segment of the ship as damaged, and the ship as sunk if all segments are damaged.
    *
    * @param coord the coordinate of the ship to damage
+   * @throws IllegalArgumentException if the given coord is not a coord this ship occupies
    */
   public void takeDamage(Coord coord) {
     segmentDamage[getSegmentNum(coord)] = true;

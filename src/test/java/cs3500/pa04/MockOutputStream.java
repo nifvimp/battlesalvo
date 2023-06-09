@@ -8,16 +8,16 @@ import java.io.PrintStream;
  *
  * @implNote It can also act as an Appendable and PrintStream.
  */
-public class TestOutputStream extends OutputStream implements Appendable {
+public class MockOutputStream extends OutputStream implements Appendable {
   /**
    * Contents of this output stream.
    */
   private final StringBuilder output;
 
   /**
-   * Creates a new empty test output stream.
+   * Creates a new empty mock output stream.
    */
-  public TestOutputStream() {
+  public MockOutputStream() {
     output = new StringBuilder();
   }
 

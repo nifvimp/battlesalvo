@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-
 /**
  * Terminal view of a battle salvo game.
  */
@@ -67,8 +66,6 @@ public class TerminalView implements GameView {
         )
     );
   }
-
-  // TODO: fix output
 
   /**
    * Converts the 2d character array representation of a board to a string.

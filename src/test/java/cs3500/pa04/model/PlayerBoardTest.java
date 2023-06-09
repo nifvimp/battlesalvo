@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockOutputStream;
 
 /**
  * Tests the PlayerBoard class.
@@ -21,7 +21,7 @@ import cs3500.pa04.TestOutputStream;
 public class PlayerBoardTest {
   private Board testBoard;
   private GameView testView;
-  private TestOutputStream testOut;
+  private MockOutputStream testOut;
 
   /**
    * Sets up a test board and test output.
@@ -33,7 +33,7 @@ public class PlayerBoardTest {
         new Ship(ShipType.SUBMARINE, new Coord(4, 1), Orientation.VERTICAL)
     );
     testBoard = new Board(5, 5, ships);
-    testOut = new TestOutputStream();
+    testOut = new MockOutputStream();
     testView = new TerminalView(testOut.toPrintStream(), new StringReader(""));
   }
 

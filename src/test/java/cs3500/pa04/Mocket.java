@@ -16,15 +16,15 @@ import java.util.List;
  */
 public class Mocket extends Socket {
   private final static ObjectMapper MAPPER = new ObjectMapper();
-  private final TestInputStream in;
-  private final TestOutputStream out;
+  private final MockInputStream in;
+  private final MockOutputStream out;
 
   /**
    * Makes a new mock socket.
    */
   public Mocket() {
-    this.in = new TestInputStream();
-    this.out = new TestOutputStream();
+    this.in = new MockInputStream();
+    this.out = new MockOutputStream();
   }
 
   /**

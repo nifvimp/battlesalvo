@@ -4,7 +4,7 @@ package cs3500.pa04.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;
@@ -20,7 +20,7 @@ public class BoardObserverTest {
   private Board p1Board;
   private Board p2Board;
   private GameView testView;
-  private TestOutputStream testOut;
+  private MockOutputStream testOut;
   private Player p1;
   private Player p2;
 
@@ -39,7 +39,7 @@ public class BoardObserverTest {
     p1 = new RandomPlayer(observer);
     p2 = new RandomPlayer(observer);
     observer.registerBoard(p1, p1Board);
-    testOut = new TestOutputStream();
+    testOut = new MockOutputStream();
     testView = new TerminalView(testOut.toPrintStream(), new StringReader(""));
   }
 

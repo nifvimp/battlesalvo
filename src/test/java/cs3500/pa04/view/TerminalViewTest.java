@@ -3,8 +3,8 @@ package cs3500.pa04.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.TestInputStream;
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockInputStream;
+import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.ShipType;
@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
  * Tests the TerminalView class.
  */
 public class TerminalViewTest {
-  private TestOutputStream testOut;
-  private TestInputStream testIn;
+  private MockOutputStream testOut;
+  private MockInputStream testIn;
   private GameView testView;
 
   /**
@@ -25,9 +25,27 @@ public class TerminalViewTest {
    */
   @BeforeEach
   public void setup() {
-    testOut = new TestOutputStream();
-    testIn = new TestInputStream();
+    testOut = new MockOutputStream();
+    testIn = new MockInputStream();
     testView = new TerminalView(testOut.toPrintStream(), testIn.toReadable());
+  }
+
+  /**
+   * Tests if message is displayed properly.
+   */
+  @Test
+  public void testShowMessage() {
+    testView.showMessage("Hello World!");
+    assertEquals("Hello World!" + System.lineSeparator(), testOut.toString());
+  }
+
+  @Test
+  public void testGreet() {
+    testView.greet();
+    assertEquals("""
+            Hello! Welcome to the OOD BattleSalvo Game!
+            """ + System.lineSeparator(),
+        testOut.toString());
   }
 
   /**
@@ -47,16 +65,19 @@ public class TerminalViewTest {
     };
     testView.displayPlayerBoard(fakeBoardRepresentation);
     assertEquals("""
-        Your Board:
-        \tB B B B B - - -
-        \t- M C - - D - -
-        \t- - H - - D M -
-        \t- - C - - D - -
-        \t- - C - - D - -
-        \t- - C - - - M -
-        \t- - H - - - - -
-        \t- S S H M M - -
-        """, testOut.toString());
+            Your Board:
+                    
+                    0  1  2  3  4  5  6  7
+                  0 B  B  B  B  B  -  -  -
+                  1 -  M  C  -  -  D  -  -
+                  2 -  -  H  -  -  D  M  -
+                  3 -  -  C  -  -  D  -  -
+                  4 -  -  C  -  -  D  -  -
+                  5 -  -  C  -  -  -  M  -
+                  6 -  -  H  -  -  -  -  -
+                  7 -  S  S  H  M  M  -  -
+            """ + System.lineSeparator(),
+        testOut.toString());
   }
 
   /**
@@ -76,75 +97,47 @@ public class TerminalViewTest {
     };
     testView.displayOpponentBoard(fakeBoardRepresentation);
     assertEquals("""
-        Opponent Board Data:
-        \tM M H H H M M M
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        """, testOut.toString());
-  }
-
-  /**
-   * Tests if message is displayed properly.
-   */
-  @Test
-  public void testShowMessage() {
-    testView.showMessage("Hello World!");
-    assertEquals("Hello World!\n", testOut.toString());
+            Opponent Board Data:
+                    
+                    0  1  2  3  4  5  6  7
+                  0 M  M  H  H  H  M  M  M
+                  1 -  -  -  -  -  -  -  -
+                  2 -  -  -  -  -  -  -  -
+                  3 -  -  -  -  -  -  -  -
+                  4 -  -  -  -  -  -  -  -
+                  5 -  -  -  -  -  -  -  -
+                  6 -  -  -  -  -  -  -  -
+                  7 -  -  -  -  -  -  -  -
+            """ + System.lineSeparator(),
+        testOut.toString());
   }
 
   /**
    * Tests if the view prompts and gets the user input correctly.
    */
   @Test
-  public void testGetBoardSize() {
+  public void testGetBoardDimensions() {
     testIn.input("10 10");
     String input = testView.getBoardDimensions(new Coord(6, 15));
     assertEquals(input, "10 10");
-    assertEquals("Please enter a valid height and width below:\n", testOut.toString());
+    assertEquals("""
+        Boards can be between sizes 6 and 15, and dimensions do not need to match.
+        Please enter a valid height and width below:
+        ------------------------------------------------------"""
+        + System.lineSeparator(), testOut.toString());
   }
 
   /**
    * Tests if the view notifies the user of an invalid input correctly.
    */
   @Test
-  public void testInvalidBoardSize() {
+  public void testInvalidBoardDimensions() {
     testView.invalidBoardDimensions(new Coord(6, 15));
-    assertEquals("The dimensions you entered were invalid dimensions. Please remember that "
-            + "the height and width of the game must be in the range (6, 15), inclusive.\n",
+    assertEquals("Uh Oh! You've entered invalid dimensions. Please remember that "
+            + "the height and width of the game must be in the range (6, 15), inclusive."
+            + "\n------------------------------------------------------"
+            + System.lineSeparator(),
         testOut.toString());
-  }
-
-//  /**
-//   * Tests if the view prompts and gets the user input correctly.
-//   */
-//  @Test
-//  public void testGetShots() {
-//    testView = new TerminalView(testOut, new StringReader("""
-//        0 0
-//        1 3
-//        3 2
-//        5 4
-//        5 5
-//        never reach
-//        """));
-//    List<String> input = testView.getShots(5);
-//    assertEquals(List.of("0 0", "1 3", "3 2", "5 4", "5 5"), input);
-//    assertEquals("Please Enter 5 Shots:\n", testOut.toString());
-//  }
-
-  /**
-   * Tests if the view notifies the user of an invalid input correctly.
-   */
-  @Test
-  public void testInvalidShots() {
-    testView.invalidShots();
-    assertEquals("Some of the shots you entered were either invalid, out of bounds, "
-        + "or has already been shot.\n", testOut.toString());
   }
 
   /**
@@ -156,7 +149,11 @@ public class TerminalViewTest {
     String input = testView.getFleet(6);
     String shipOrder = Arrays.toString(ShipType.values());
     assertEquals("1 2 2 1", input);
-    assertEquals(String.format("Please enter your fleet in the order %s.\n", shipOrder),
+    assertEquals(String.format("""
+            Please enter your fleet in the order %s.
+            Remember, your fleet may not exceed size 6.
+            ------------------------------------------------------"""
+            + System.lineSeparator(), shipOrder),
         testOut.toString());
   }
 
@@ -166,8 +163,42 @@ public class TerminalViewTest {
   @Test
   public void testInvalidFleet() {
     testView.invalidFleet();
-    assertEquals("The fleet you entered is invalid. Remember, your fleet must "
-        + "of size 6 and have at least one of each ship type.\n", testOut.toString());
+    assertEquals("Uh Oh! You've entered invalid fleet sizes."
+        + System.lineSeparator(), testOut.toString());
+  }
+
+  /**
+   * Tests if prompt shots prompts correctly.
+   */
+  @Test
+  public void testPromptShots() {
+    testView.promptShots(4);
+    testView.promptShots(1);
+    assertEquals("Please enter 4 shots:" + System.lineSeparator()
+            + "Please enter 1 shot:" + System.lineSeparator(),
+        testOut.toString());
+  }
+
+  /**
+   * Tests if the view notifies the user of an invalid input correctly.
+   */
+  @Test
+  public void testInvalidShots() {
+    testView.invalidShots();
+    assertEquals("""
+        ------------------------------------------------------
+        Please try again. Shots must be a valid coordinate on the board."""
+        + System.lineSeparator(), testOut.toString());
+  }
+
+  @Test
+  public void testGetShot() {
+    testIn.input("""
+        0 0
+        0 1
+        """);
+    assertEquals("0 0", testView.getShot());
+    assertEquals("0 1", testView.getShot());
   }
 
   /**
@@ -177,8 +208,9 @@ public class TerminalViewTest {
   public void testShowResults() {
     testView.showResults(GameResult.WIN, "All opponent ships sunk.");
     assertEquals("""
-        You Won!
-        All opponent ships sunk.
-        """, testOut.toString());
+            You Won!
+            All opponent ships sunk."""
+            + System.lineSeparator(),
+        testOut.toString());
   }
 }

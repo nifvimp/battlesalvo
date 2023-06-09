@@ -9,20 +9,20 @@ import java.util.Arrays;
  *
  * @implNote Can be accessed as a Readable using the toReadable method.
  */
-public class TestInputStream extends ByteArrayInputStream {
+public class MockInputStream extends ByteArrayInputStream {
   /**
-   * Creates a new test input stream with the given input.
+   * Creates a new mock input stream with the given input.
    *
    * @param input input
    */
-  public TestInputStream(byte[] input) {
+  public MockInputStream(byte[] input) {
     super(input);
   }
 
   /**
-   * Creates a new empty test input stream.
+   * Creates a new empty mock input stream.
    */
-  public TestInputStream() {
+  public MockInputStream() {
     this(new byte[0]);
   }
 

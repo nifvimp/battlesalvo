@@ -3,8 +3,8 @@ package cs3500.pa04.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.TestInputStream;
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockInputStream;
+import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.ShipType;
 import cs3500.pa04.view.GameView;
@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
  * Tests the InputCollector class.
  */
 public class InputCollectorTest {
-  private TestOutputStream testOut;
-  private TestInputStream testIn;
+  private MockOutputStream testOut;
+  private MockInputStream testIn;
   private GameView testView;
   private UserCommunicator collector;
 
@@ -30,8 +30,8 @@ public class InputCollectorTest {
    */
   @BeforeEach
   public void setup() {
-    testOut = new TestOutputStream();
-    testIn = new TestInputStream();
+    testOut = new MockOutputStream();
+    testIn = new MockInputStream();
     testView = new TerminalView(testOut.toPrintStream(), testIn.toReadable());
     collector = new UserCommunicator(testView);
   }

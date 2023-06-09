@@ -13,7 +13,7 @@ import java.io.StringReader;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockOutputStream;
 
 
 /**
@@ -21,7 +21,7 @@ import cs3500.pa04.TestOutputStream;
  */
 public class LocalControllerTest {
   private static final long SEED = 0;
-  private TestOutputStream testOut;
+  private MockOutputStream testOut;
   private Controller controller;
 
   /**
@@ -29,7 +29,7 @@ public class LocalControllerTest {
    */
   @BeforeEach
   public void setup() {
-    testOut = new TestOutputStream();
+    testOut = new MockOutputStream();
     GameView view = new TerminalView(testOut.toPrintStream(),
         new StringReader("""
         6 6

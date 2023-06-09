@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockOutputStream;
 
 /**
  * Abstract test class for Local Players.
@@ -21,14 +21,14 @@ public abstract class LocalPlayerTest {
   protected LocalPlayer testPlayer;
   protected BoardObserver observer;
   protected GameView view;
-  protected TestOutputStream testOut;
+  protected MockOutputStream testOut;
 
   /**
    * Sets up a test output and player for tests.
    */
   @BeforeEach
   public void setup() {
-    testOut = new TestOutputStream();
+    testOut = new MockOutputStream();
     view = new TerminalView(testOut.toPrintStream(), new StringReader(""));
     observer = new BoardObserver();
     testPlayer = makeTestPlayer(observer, new Random(SEED));
@@ -38,7 +38,7 @@ public abstract class LocalPlayerTest {
   }
 
   /**
-   * Makes a player to run tests on.
+   * Makes a player to run the tests inside this abstract test class on.
    *
    * @param observer test observer
    * @param random   random to randomize by
@@ -51,24 +51,30 @@ public abstract class LocalPlayerTest {
    */
   @Test
   public void testSetup() {
-    view.displayPlayerBoard(observer.getBoard(testPlayer.name()).getPlayerBoard());
-    view.displayOpponentBoard(observer.getBoard(testPlayer.name()).getOpponentKnowledge());
+    view.displayPlayerBoard(observer.getBoard(testPlayer).getPlayerBoard());
+    view.displayOpponentBoard(observer.getBoard(testPlayer).getOpponentKnowledge());
     assertEquals("""
         Your Board:
-        \tB - - B C C
-        \tB - D B C C
-        \tB S D B C C
-        \tB S D B C C
-        \tB S D B C C
-        \t- - - - C C
+                
+                0  1  2  3  4  5
+              0 B  ~  ~  B  C  C
+              1 B  ~  D  B  C  C
+              2 B  U  D  B  C  C
+              3 B  U  D  B  C  C
+              4 B  U  D  B  C  C
+              5 ~  ~  ~  ~  C  C
+        """ + System.lineSeparator() + """
         Opponent Board Data:
-        \t- - - - - -
-        \t- - - - - -
-        \t- - - - - -
-        \t- - - - - -
-        \t- - - - - -
-        \t- - - - - -
-        """, testOut.toString());
+                
+                0  1  2  3  4  5
+              0 ~  ~  ~  ~  ~  ~
+              1 ~  ~  ~  ~  ~  ~
+              2 ~  ~  ~  ~  ~  ~
+              3 ~  ~  ~  ~  ~  ~
+              4 ~  ~  ~  ~  ~  ~
+              5 ~  ~  ~  ~  ~  ~
+        """ + System.lineSeparator(),
+        testOut.toString());
   }
 
   /**
@@ -82,36 +88,42 @@ public abstract class LocalPlayerTest {
     testPlayer.setup(12, 8,
         Map.of(ShipType.CARRIER, 12, ShipType.BATTLESHIP, 1, ShipType.DESTROYER, 1,
             ShipType.SUBMARINE, 1));
-    view.displayPlayerBoard(observer.getBoard(testPlayer.name()).getPlayerBoard());
-    view.displayOpponentBoard(observer.getBoard(testPlayer.name()).getOpponentKnowledge());
+    view.displayPlayerBoard(observer.getBoard(testPlayer).getPlayerBoard());
+    view.displayOpponentBoard(observer.getBoard(testPlayer).getOpponentKnowledge());
     assertEquals("""
         Your Board:
-        \tC C C C C C - -
-        \tC C C C C C - -
-        \tC C C C C C - S
-        \tB B B B B - C S
-        \tC C C C C C C S
-        \tC C C C C C C C
-        \tC C C C C C C C
-        \tC C C C C C C C
-        \tC C C C C C C C
-        \tC C C C C C - C
-        \t- C C C C C C C
-        \t- D D D D - - -
+                
+                0  1  2  3  4  5  6  7
+              0 C  C  C  C  C  C  ~  D
+              1 C  C  C  C  C  C  ~  D
+              2 C  C  C  C  C  C  ~  D
+              3 ~  U  U  U  ~  ~  C  D
+              4 C  C  C  C  C  C  C  ~
+              5 C  C  C  C  C  C  C  C
+              6 C  C  C  C  C  C  C  C
+              7 C  C  C  C  C  C  C  C
+              8 C  C  C  C  C  C  C  C
+              9 C  C  C  C  C  C  ~  C
+             10 ~  C  C  C  C  C  C  C
+             11 B  B  B  B  B  ~  ~  ~
+        """ + System.lineSeparator() + """
         Opponent Board Data:
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        \t- - - - - - - -
-        """, testOut.toString());
+                
+                0  1  2  3  4  5  6  7
+              0 ~  ~  ~  ~  ~  ~  ~  ~
+              1 ~  ~  ~  ~  ~  ~  ~  ~
+              2 ~  ~  ~  ~  ~  ~  ~  ~
+              3 ~  ~  ~  ~  ~  ~  ~  ~
+              4 ~  ~  ~  ~  ~  ~  ~  ~
+              5 ~  ~  ~  ~  ~  ~  ~  ~
+              6 ~  ~  ~  ~  ~  ~  ~  ~
+              7 ~  ~  ~  ~  ~  ~  ~  ~
+              8 ~  ~  ~  ~  ~  ~  ~  ~
+              9 ~  ~  ~  ~  ~  ~  ~  ~
+             10 ~  ~  ~  ~  ~  ~  ~  ~
+             11 ~  ~  ~  ~  ~  ~  ~  ~
+        """ + System.lineSeparator(),
+        testOut.toString());
   }
 
   /**
@@ -128,39 +140,18 @@ public abstract class LocalPlayerTest {
                 new Coord(0, 0), new Coord(1, 0), new Coord(2, 0),
                 new Coord(3, 0), new Coord(4, 0), new Coord(5, 0)))
     );
-    view.displayPlayerBoard(observer.getBoard(testPlayer.name()).getPlayerBoard());
+    view.displayPlayerBoard(observer.getBoard(testPlayer).getPlayerBoard());
     assertEquals("""
         Your Board:
-        \tH M M H H H
-        \tB - D B C C
-        \tB S D B C C
-        \tB S D B C C
-        \tB S D B C C
-        \t- - - - C C
-        """, testOut.toString());
+                
+                0  1  2  3  4  5
+              0 H  X  X  H  H  H
+              1 B  ~  D  B  C  C
+              2 B  U  D  B  C  C
+              3 B  U  D  B  C  C
+              4 B  U  D  B  C  C
+              5 ~  ~  ~  ~  C  C
+        """ + System.lineSeparator(),
+        testOut.toString());
   }
-
-//  /**
-//   * Tests if the player marks their board correctly based on the successful hits
-//   * reported.
-//   */
-//  @Test
-//  public void testSuccessfulHits() {
-//    testPlayer.salvo.addAll(
-//        List.of(
-//            new Coord(0, 0), new Coord(1, 0), new Coord(2, 0),
-//            new Coord(3, 0), new Coord(4, 0), new Coord(5, 0)));
-//    testPlayer.successfulHits(
-//        List.of(new Coord(0, 0), new Coord(3, 0), new Coord(4, 0)));
-//    view.displayPlayerBoard(observer.getBoard(testPlayer.name()).getOpponentKnowledge());
-//    assertEquals("""
-//        Your Board:
-//        \tH M M H H M
-//        \t- - - - - -
-//        \t- - - - - -
-//        \t- - - - - -
-//        \t- - - - - -
-//        \t- - - - - -
-//        """, testOut.toString());
-//  }
 }

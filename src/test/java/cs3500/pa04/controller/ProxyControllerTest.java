@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cs3500.pa04.Mocket;
-import cs3500.pa04.TestInputStream;
-import cs3500.pa04.TestOutputStream;
+import cs3500.pa04.MockInputStream;
+import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.json.FleetJson;
 import cs3500.pa04.json.GameType;
 import cs3500.pa04.json.MessageJson;
@@ -34,15 +34,15 @@ import org.junit.jupiter.api.Test;
 public class ProxyControllerTest {
   private static final ObjectMapper MAPPER = new ObjectMapper();
   private Mocket server;
-  private TestInputStream viewInput;
-  private TestOutputStream viewOutput;
+  private MockInputStream viewInput;
+  private MockOutputStream viewOutput;
   private ProxyController controller;
 
   @BeforeEach
   public void setup() {
     BoardObserver observer = new BoardObserver();
-    viewInput = new TestInputStream();
-    viewOutput = new TestOutputStream();
+    viewInput = new MockInputStream();
+    viewOutput = new MockOutputStream();
     GameView view = new TerminalView(viewOutput.toPrintStream(), viewInput.toReadable());
     UserCommunicator communicator = new UserCommunicator(view);
     Player player = new ManualPlayer(observer, communicator, new Random(0));

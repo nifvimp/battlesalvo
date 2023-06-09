@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the ArtificialPlayer class.
  */
-class ArtificialPlayerTest extends LocalPlayerTest {
+class RandomPlayerTest extends LocalPlayerTest {
   @Override
   protected LocalPlayer makeTestPlayer(BoardObserver observer, Random random) {
     return new RandomPlayer(observer, random);
@@ -20,7 +20,9 @@ class ArtificialPlayerTest extends LocalPlayerTest {
    */
   @Test
   public void testName() {
-    assertEquals("Artificial Player", testPlayer.name());
+    assertEquals("Random Player", testPlayer.name());
+    Random random = new Random();
+    System.out.println(random);
   }
 
 //  /**
