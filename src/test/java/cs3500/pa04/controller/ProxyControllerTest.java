@@ -17,7 +17,7 @@ import cs3500.pa04.json.VolleyJson;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
-import cs3500.pa04.model.ManualPlayer;
+import cs3500.pa04.model.player.ManualPlayer;
 import cs3500.pa04.model.Orientation;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.Ship;

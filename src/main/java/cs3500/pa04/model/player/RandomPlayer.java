@@ -1,6 +1,8 @@
-package cs3500.pa04.model;
+package cs3500.pa04.model.player;
 
 
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

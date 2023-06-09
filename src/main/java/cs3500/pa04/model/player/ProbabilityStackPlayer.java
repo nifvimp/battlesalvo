@@ -1,5 +1,10 @@
-package cs3500.pa04.model;
+package cs3500.pa04.model.player;
 
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.Orientation;
+import cs3500.pa04.model.Ship;
+import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -10,10 +15,11 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
-public class ProbabilityPlayer extends LocalPlayer {
-  private static final int MILLISECONDS_THREAD_INTERRUPT = 1000;
+public class ProbabilityStackPlayer extends LocalPlayer {
+  private static final int MILLISECONDS_THREAD_INTERRUPT = 50;
   private static final int THREADS = 50;
   private double[][] probabilityDistribution;
   private Map<ShipType, Integer> specifications;
@@ -25,7 +31,10 @@ public class ProbabilityPlayer extends LocalPlayer {
   private long count;
   private int runs;
 
-  public ProbabilityPlayer(BoardObserver observer) {
+  private final Stack<Coord> shotStack = new Stack<>();
+
+
+  public ProbabilityStackPlayer(BoardObserver observer) {
     super(observer);
     this.hits = new HashSet<>();
     this.misses = new HashSet<>();
@@ -127,8 +136,12 @@ public class ProbabilityPlayer extends LocalPlayer {
     @Override
     public void run() {
       while(!this.isInterrupted()) {
-        runs++;
-        simulateShipPlacement();
+        try {
+          simulateShipPlacement();
+          runs++;
+        } catch (NullPointerException ignored) {
+          // An empty catch block
+        }
       }
     }
   }
@@ -165,6 +178,7 @@ public class ProbabilityPlayer extends LocalPlayer {
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
     for (Coord hit : shotsThatHitOpponentShips) {
+      addAdjacentShots(hit);
       board.markOpponent(hit, true);
       hits.add(hit);
     }
@@ -185,6 +199,15 @@ public class ProbabilityPlayer extends LocalPlayer {
   @Override
   protected List<Coord> loadShots() {
     List<Coord> shots = new ArrayList<>();
+    if (count > 0) {
+      shootProbability(shots);
+    } else {
+      shootStack(shots);
+    }
+    return shots;
+  }
+
+  private void shootProbability(List<Coord> shots) {
     Set<Coord> validShots = board.validShots();
     Map<Coord, Double> possibleShots = new HashMap<>();
     PriorityQueue<Coord> queue =
@@ -197,6 +220,44 @@ public class ProbabilityPlayer extends LocalPlayer {
     for (int i = Math.min(board.shipsLeft(), validShots.size()); i > 0; i--) {
       shots.add(queue.poll());
     }
-    return shots;
+  }
+
+  private void shootStack(List<Coord> shots) {
+    List<Coord> validShots = new ArrayList<>(board.validShots());
+    int validSum = validShots.size();
+    for (int i = Math.min(board.shipsLeft(), validSum); i > 0; i--) {
+      Coord shot;
+      do {
+        if (!shotStack.empty()) {
+          shot = shotStack.pop();
+        } else {
+          int randShot = random.nextInt(validShots.size());
+          shot = validShots.get(randShot);
+        }
+      } while (!validShots.contains(shot));
+      validShots.remove(shot);
+      shots.add(shot);
+    }
+  }
+
+  /**
+   * Adds any valid shot next to a coordinate to the shot stack.
+   *
+   * @param coord the coordinate to add around
+   */
+  private void addAdjacentShots(Coord coord) {
+    List<Coord> coords = new ArrayList<>();
+    coords.add(new Coord(coord.x() + 1, coord.y()));
+    coords.add(new Coord(coord.x() - 1, coord.y()));
+    coords.add(new Coord(coord.x(), coord.y() + 1));
+    coords.add(new Coord(coord.x(), coord.y() - 1));
+    for (Coord adjacentCoord : coords) {
+      if ((adjacentCoord.x() < width && adjacentCoord.x() >= 0)
+          && adjacentCoord.y() < height && adjacentCoord.y() >= 0) {
+        if (board.validShots().contains(adjacentCoord)) {
+          shotStack.push(adjacentCoord);
+        }
+      }
+    }
   }
 }

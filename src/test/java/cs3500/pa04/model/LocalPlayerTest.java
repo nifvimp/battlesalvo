@@ -3,6 +3,7 @@ package cs3500.pa04.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cs3500.pa04.model.player.LocalPlayer;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;

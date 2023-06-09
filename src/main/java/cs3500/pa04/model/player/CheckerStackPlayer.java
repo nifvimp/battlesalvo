@@ -1,24 +1,31 @@
-package cs3500.pa04.model;
+package cs3500.pa04.model.player;
 
 
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.Ship;
+import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 
 /**
  * A local AI player that uses a stack to shoot efficiently.
  */
-public class StackPlayer extends LocalPlayer {
+public class CheckerStackPlayer extends LocalPlayer {
   private final Stack<Coord> shotStack = new Stack<>();
   private final Random random;
+
+  private final List<Coord> checkerboard = new ArrayList<>();
   /**
    * Constructor for AiPlayer, with a given seed.
    *
    * @param observer board observer of the game
    * @param random the random seed to used to generate the board and get random shots
    */
-  public StackPlayer(BoardObserver observer, Random random) {
+  public CheckerStackPlayer(BoardObserver observer, Random random) {
     super(observer, random);
     this.random = random;
   }
@@ -29,7 +36,7 @@ public class StackPlayer extends LocalPlayer {
    *
    * @param observer board observer of the game
    */
-  public StackPlayer(BoardObserver observer) {
+  public CheckerStackPlayer(BoardObserver observer) {
     super(observer);
     this.random = new Random();
   }
@@ -37,6 +44,18 @@ public class StackPlayer extends LocalPlayer {
   @Override
   public String name() {
     return "Stack Player";
+  }
+
+  @Override
+  public List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications) {
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        if ((i + j) % 3 == 0) {
+          checkerboard.add(new Coord(j, i));
+        }
+      }
+    }
+    return super.setup(height, width, specifications);
   }
 
   @Override
@@ -49,12 +68,16 @@ public class StackPlayer extends LocalPlayer {
       do {
         if (!shotStack.empty()) {
           shot = shotStack.pop();
+        } else if (!checkerboard.isEmpty()){
+          int randShot = random.nextInt(checkerboard.size());
+          shot = checkerboard.remove(randShot);
         } else {
           int randShot = random.nextInt(validShots.size());
           shot = validShots.get(randShot);
         }
       } while (!validShots.contains(shot));
       validShots.remove(shot);
+      checkerboard.remove(shot);
       shots.add(shot);
     }
     return shots;

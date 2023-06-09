@@ -1,6 +1,14 @@
-package cs3500.pa04.model;
+package cs3500.pa04.model.player;
 
 
+import cs3500.pa04.model.Board;
+import cs3500.pa04.model.BoardObserver;
+import cs3500.pa04.model.Coord;
+import cs3500.pa04.model.GameResult;
+import cs3500.pa04.model.Orientation;
+import cs3500.pa04.model.Player;
+import cs3500.pa04.model.Ship;
+import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,7 +24,7 @@ import java.util.Set;
 public abstract class LocalPlayer implements Player {
   protected Board board;
   private final BoardObserver observer;
-  private final List<Coord> lastTurnShots;
+  protected final List<Coord> lastTurnShots;
   private final Random random;
   protected int width;
   protected int height;

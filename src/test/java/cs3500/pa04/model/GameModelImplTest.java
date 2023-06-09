@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import cs3500.pa04.TestOutputStream;
 import cs3500.pa04.controller.UserCommunicator;
+import cs3500.pa04.model.player.ManualPlayer;
+import cs3500.pa04.model.player.RandomPlayer;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;

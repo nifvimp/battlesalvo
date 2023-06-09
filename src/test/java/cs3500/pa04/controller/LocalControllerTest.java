@@ -3,9 +3,9 @@ package cs3500.pa04.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import cs3500.pa04.model.RandomPlayer;
+import cs3500.pa04.model.player.RandomPlayer;
 import cs3500.pa04.model.BoardObserver;
-import cs3500.pa04.model.ManualPlayer;
+import cs3500.pa04.model.player.ManualPlayer;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;

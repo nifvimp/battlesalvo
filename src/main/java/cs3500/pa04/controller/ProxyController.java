@@ -185,7 +185,7 @@ public class ProxyController implements Controller {
         new MessageJson("end-game", MAPPER.createObjectNode())
     );
     this.out.println(jsonResponse);
-    observer.getBoard(player.name()).hitRate();
+    observer.getBoard(player).hitRate();
     try {
       server.close();
     } catch (IOException e) {

@@ -38,7 +38,7 @@ public class TargetingLine {
   }
 
   public void updateLine(List<Coord> misses, Set<Coord> validShots) {
-    if ((lastShot.x() >= width - 1 || lastShot.x() <= 0) || (lastShot.y() >= height - 1 || lastShot.y() <= 0)) {
+    if (((lastShot.x() >= width - 1 && offsetX == 1) || (lastShot.x() <= 0 && offsetX == -1) || ((lastShot.y() >= height - 1 && offsetY == -1) || (lastShot.y() <= 0 && offsetY == 1)))) {
       finished = true;
       return;
     }
