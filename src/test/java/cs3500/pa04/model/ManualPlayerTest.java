@@ -4,11 +4,8 @@ package cs3500.pa04.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import cs3500.pa04.controller.UserCommunicator;
-import cs3500.pa04.view.TerminalView;
-import java.io.StringReader;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -17,11 +14,9 @@ import org.junit.jupiter.api.Test;
  * tests the ManualPlayer class.
  */
 class ManualPlayerTest extends LocalPlayerTest {
-  private static final long SEED = 0;
-
   @Override
   protected LocalPlayer makeTestPlayer(BoardObserver observer, Random random) {
-    return new ManualPlayer(observer, new UserCommunicator(new TerminalView()), random);
+    return new ManualPlayer(observer, new UserCommunicator(view), random);
   }
 
   /**
@@ -37,27 +32,20 @@ class ManualPlayerTest extends LocalPlayerTest {
    */
   @Test
   public void testTakeShots() {
-    observer = new BoardObserver();
-    testPlayer = new ManualPlayer(observer,
-        new UserCommunicator(
-            new TerminalView(testOut.toPrintStream(), new StringReader("""
-            0 0
-            1 0
-            2 0
-            3 0
-            10 0
-            5 0
-            0 0
-            1 0
-            2 0
-            3 0
-            4 0
-            5 0
-            """))),
-        new Random(SEED));
-    testPlayer.setup(6, 6,
-        Map.of(ShipType.CARRIER, 2, ShipType.BATTLESHIP, 2, ShipType.DESTROYER, 1,
-            ShipType.SUBMARINE, 1));
+    testIn.input("""
+    0 0
+    1 0
+    2 0
+    3 0
+    10 0
+    5 0
+    0 0
+    1 0
+    2 0
+    3 0
+    4 0
+    5 0
+    """);
     assertEquals(
         Set.of(
             new Coord(0, 0), new Coord(1, 0), new Coord(2, 0),
@@ -71,24 +59,18 @@ class ManualPlayerTest extends LocalPlayerTest {
    */
   @Test
   public void testSuccessfulHits() {
-    observer = new BoardObserver();
-    testPlayer = new ManualPlayer(observer,
-        new UserCommunicator(
-            new TerminalView(testOut.toPrintStream(), new StringReader("""
-            0 0
-            1 0
-            2 0
-            3 0
-            4 0
-            5 0
-            """))),
-        new Random(SEED));
-    testPlayer.setup(6, 6,
-        Map.of(ShipType.CARRIER, 2, ShipType.BATTLESHIP, 2, ShipType.DESTROYER, 1,
-            ShipType.SUBMARINE, 1));
+    testIn.input("""
+    0 0
+    1 0
+    2 0
+    3 0
+    4 0
+    5 0
+    """);
     testPlayer.takeShots();
     testPlayer.successfulHits(
-        List.of(new Coord(0, 0), new Coord(3, 0), new Coord(4, 0)));
+        List.of(new Coord(0, 0), new Coord(3, 0), new Coord(4, 0))
+    );
     view.displayPlayerBoard(observer.getBoard(testPlayer).getOpponentKnowledge());
     assertEquals("Please enter 6 shots:" + System.lineSeparator() + """
         Your Board:
@@ -100,6 +82,7 @@ class ManualPlayerTest extends LocalPlayerTest {
               3 ~  ~  ~  ~  ~  ~
               4 ~  ~  ~  ~  ~  ~
               5 ~  ~  ~  ~  ~  ~
-        """ + System.lineSeparator(), testOut.toString());
+        """ + System.lineSeparator(),
+        testOut.toString());
   }
 }

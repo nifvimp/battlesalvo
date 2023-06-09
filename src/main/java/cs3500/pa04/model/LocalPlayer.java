@@ -85,7 +85,7 @@ public abstract class LocalPlayer implements Player {
         attempts++;
         if (attempts > 10000) {
           throw new IllegalArgumentException(
-              "It is impossible to setup with the given specifications."
+              "It is near impossible to setup with the given specifications."
           );
         }
         if (placeShip(shipsToPlace.get(shipsPlaced), height, width, ships)) {

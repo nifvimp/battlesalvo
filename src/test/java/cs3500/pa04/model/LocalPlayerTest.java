@@ -3,9 +3,10 @@ package cs3500.pa04.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cs3500.pa04.MockInputStream;
+import cs3500.pa04.MockRandom;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -17,11 +18,12 @@ import cs3500.pa04.MockOutputStream;
  * Abstract test class for Local Players.
  */
 public abstract class LocalPlayerTest {
-  private static final long SEED = 0;
   protected LocalPlayer testPlayer;
   protected BoardObserver observer;
   protected GameView view;
   protected MockOutputStream testOut;
+  protected MockInputStream testIn;
+  protected MockRandom random;
 
   /**
    * Sets up a test output and player for tests.
@@ -29,9 +31,11 @@ public abstract class LocalPlayerTest {
   @BeforeEach
   public void setup() {
     testOut = new MockOutputStream();
-    view = new TerminalView(testOut.toPrintStream(), new StringReader(""));
+    testIn = new MockInputStream();
+    random = new MockRandom();
     observer = new BoardObserver();
-    testPlayer = makeTestPlayer(observer, new Random(SEED));
+    view = new TerminalView(testOut.toPrintStream(), testIn.toReadable());
+    testPlayer = makeTestPlayer(observer, random);
     testPlayer.setup(6, 6,
         Map.of(ShipType.CARRIER, 2, ShipType.BATTLESHIP, 2, ShipType.DESTROYER, 1,
             ShipType.SUBMARINE, 1));
@@ -51,6 +55,7 @@ public abstract class LocalPlayerTest {
    */
   @Test
   public void testSetup() {
+    random.useRandom();
     view.displayPlayerBoard(observer.getBoard(testPlayer).getPlayerBoard());
     view.displayOpponentBoard(observer.getBoard(testPlayer).getOpponentKnowledge());
     assertEquals("""
@@ -84,20 +89,20 @@ public abstract class LocalPlayerTest {
   @Test
   public void testSetupTight() {
     observer = new BoardObserver();
-    testPlayer = makeTestPlayer(observer, new Random(SEED));
+    testPlayer = makeTestPlayer(observer, new MockRandom().useRandom());
     testPlayer.setup(12, 8,
         Map.of(ShipType.CARRIER, 12, ShipType.BATTLESHIP, 1, ShipType.DESTROYER, 1,
-            ShipType.SUBMARINE, 1));
+            ShipType.SUBMARINE, 3));
     view.displayPlayerBoard(observer.getBoard(testPlayer).getPlayerBoard());
     view.displayOpponentBoard(observer.getBoard(testPlayer).getOpponentKnowledge());
     assertEquals("""
         Your Board:
                 
                 0  1  2  3  4  5  6  7
-              0 C  C  C  C  C  C  ~  D
-              1 C  C  C  C  C  C  ~  D
-              2 C  C  C  C  C  C  ~  D
-              3 ~  U  U  U  ~  ~  C  D
+              0 C  C  C  C  C  C  U  D
+              1 C  C  C  C  C  C  U  D
+              2 C  C  C  C  C  C  U  D
+              3 U  U  U  U  U  U  C  D
               4 C  C  C  C  C  C  C  ~
               5 C  C  C  C  C  C  C  C
               6 C  C  C  C  C  C  C  C
@@ -106,7 +111,7 @@ public abstract class LocalPlayerTest {
               9 C  C  C  C  C  C  ~  C
              10 ~  C  C  C  C  C  C  C
              11 B  B  B  B  B  ~  ~  ~
-        """ + System.lineSeparator() + """
+            """ + System.lineSeparator() + """
         Opponent Board Data:
                 
                 0  1  2  3  4  5  6  7

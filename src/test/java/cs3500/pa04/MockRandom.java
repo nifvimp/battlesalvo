@@ -1,6 +1,7 @@
 package cs3500.pa04;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -12,6 +13,7 @@ import java.util.concurrent.Callable;
 public class MockRandom extends Random {
   private static final long DEFAULT_SEED = 0;
   private final Deque<Object> buf = new ArrayDeque<>();
+  private boolean useInjected = true;
 
   /**
    * Creates a new mock random.
@@ -33,11 +35,26 @@ public class MockRandom extends Random {
    * Injects the mock random buffer with the given values to be read later.
    *
    * @param values values to inject
+   * @return a reference to this object
    */
-  public void inject(Object... values) {
+  public MockRandom inject(Object... values) {
     for (Object value : values) {
       buf.addLast(value);
     }
+    return this;
+  }
+
+  /**
+   * Injects the mock random buffer with the given values to be read later.
+   *
+   * @param values values to inject
+   * @return a reference to this object
+   */
+  public MockRandom inject(Collection<Object> values) {
+    for (Object value : values) {
+      buf.addLast(value);
+    }
+    return this;
   }
 
   /**
@@ -46,10 +63,31 @@ public class MockRandom extends Random {
    * integer.
    *
    * @param expected expected integer result
-   * @param bound upperbound / multiplier
+   * @param bound    upperbound / multiplier
+   * @return a reference to this object
    */
-  public void injectDouble(int expected, int bound) {
+  public MockRandom injectDouble(int expected, int bound) {
     buf.addLast((double) expected / bound);
+    return this;
+  }
+
+  /**
+   * Tells the mock random to return the values from its buffer.
+   *
+   * @return a reference to this object
+   */
+  public MockRandom useInjected() {
+    useInjected = true;
+    return this;
+  }
+
+  /**
+   * Tells the mock random to return pseudorandom values based on the normal java Random
+   * implementation.
+   */
+  public MockRandom useRandom() {
+    useInjected = false;
+    return this;
   }
 
   @Override
@@ -112,9 +150,11 @@ public class MockRandom extends Random {
    * @param defaultMethod default method to call if the buffer is empty
    * @param <T>           type of expected value
    * @return the next value in the buffer
+   * @throws IllegalArgumentException if the value queued into the mock random buffer
+   *                                  does not match the type requested.
    */
   private <T> T getNext(Class<T> expected, Callable<T> defaultMethod) {
-    if (buf.isEmpty()) {
+    if (buf.isEmpty() || !useInjected) {
       try {
         return defaultMethod.call();
       } catch (Exception e) {

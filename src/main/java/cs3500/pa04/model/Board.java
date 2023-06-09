@@ -2,12 +2,12 @@ package cs3500.pa04.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * An abstract Battle Salvo game board.
+ * An Battle Salvo game board.
  */
 public class Board {
   private final char[][] opponentKnowledge;
@@ -18,7 +18,7 @@ public class Board {
   private final int height;
 
   /**
-   * Creates an abstract battle salvo game board.
+   * Creates an battle salvo game board.
    *
    * @param height height of the board
    * @param width  width of the board
@@ -27,7 +27,7 @@ public class Board {
     this.opponentKnowledge = new char[height][width];
     this.playerBoard = new Cell[height][width];
     this.ships = new ArrayList<>(ships);
-    this.shotsLeft = new HashSet<>();
+    this.shotsLeft = new LinkedHashSet<>();
     this.width = width;
     this.height = height;
     for (int i = 0; i < height; i++) {
@@ -40,6 +40,7 @@ public class Board {
     for (Ship ship : ships) {
       for (Coord coord : ship.getOccupied()) {
         if(coord.y() >= height || coord.x() >= width) {
+          // TODO: what is this for?
         }
         playerBoard[coord.y()][coord.x()] = new Cell(ship);
       }
@@ -80,7 +81,7 @@ public class Board {
    * @return valid shots left
    */
   public Set<Coord> validShots() {
-    return new HashSet<>(shotsLeft);
+    return new LinkedHashSet<>(shotsLeft);
   }
 
   /**
@@ -100,8 +101,8 @@ public class Board {
    * @param hit   true if shot on opponent was a hit
    */
   public void markOpponent(Coord coord, boolean hit) {
-    shotsLeft.remove(coord);
     opponentKnowledge[coord.y()][coord.x()] = hit ? 'H' : 'X';
+    shotsLeft.remove(coord);
   }
 
   /**
