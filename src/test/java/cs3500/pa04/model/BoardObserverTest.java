@@ -2,7 +2,9 @@ package cs3500.pa04.model;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.view.GameView;
@@ -28,13 +30,13 @@ public class BoardObserverTest {
    * Sets up test output and players to test the observer.
    */
   @BeforeEach
-  public void setup() {
+  public void testSetup() {
     observer = new BoardObserver();
-    p1Board = new Board(5, 5, List.of(
+    p1Board = new Board(6, 6, List.of(
         new Ship(ShipType.SUBMARINE, new Coord(4, 1), Orientation.VERTICAL))
     );
-    p2Board = new Board(5, 5, List.of(
-        new Ship(ShipType.SUBMARINE, new Coord(0, 2), Orientation.VERTICAL))
+    p2Board = new Board(6, 6, List.of(
+        new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.VERTICAL))
     );
     p1 = new RandomPlayer(observer);
     p2 = new RandomPlayer(observer);
@@ -47,7 +49,7 @@ public class BoardObserverTest {
    * Tests if board registration registers correctly.
    */
   @Test
-  public void registerBoard() {
+  public void testRegisterBoard() {
     assertNull(observer.getBoard(p2));
     observer.registerBoard(p2, p2Board);
     assertEquals(p2Board, observer.getBoard(p2));
@@ -58,24 +60,49 @@ public class BoardObserverTest {
    * Tests if getPlayerBoard() gets the right board.
    */
   @Test
-  public void getBoard() {
+  public void testGetBoard() {
     assertEquals(p1Board, observer.getBoard(p1));
     p1Board.takeDamage(new Coord(0, 0));
     p1Board.takeDamage(new Coord(1, 1));
-    p1Board.takeDamage(new Coord(4, 2));
+    p1Board.takeDamage(new Coord(2, 2));
     assertEquals(p1Board, observer.getBoard(p1));
     String expected = """
         Your Board:
                 
-                0  1  2  3  4
-              0 X  ~  ~  ~  ~
-              1 ~  X  ~  ~  U
-              2 ~  ~  ~  ~  H
-              3 ~  ~  ~  ~  U
-              4 ~  ~  ~  ~  ~
-              
-        """;
+                0  1  2  3  4  5
+              0 X  ~  ~  ~  ~  ~
+              1 ~  X  ~  ~  U  ~
+              2 ~  ~  X  ~  U  ~
+              3 ~  ~  ~  ~  U  ~
+              4 ~  ~  ~  ~  ~  ~
+              5 ~  ~  ~  ~  ~  ~
+        """ + System.lineSeparator();
     testView.displayPlayerBoard(observer.getBoard(p1).getPlayerBoard());
     assertEquals(expected, testOut.toString());
+  }
+
+  /**
+   * Test if game over works correctly
+   */
+  @Test
+  public void testIsGameOver() {
+    observer.registerBoard(p2, p2Board);
+    assertFalse(observer.isGameOver());
+    obliterate(p2Board);
+    assertTrue(observer.isGameOver());
+    obliterate(p1Board);
+    assertTrue(observer.isGameOver());
+  }
+
+  /**
+   * Shoots every spot on the board.
+   */
+  private void obliterate(Board board) {
+    char[][] player = board.getPlayerBoard();
+    for (int i = 0; i < player.length; i++) {
+      for (int j = 0; j < player[i].length; j++) {
+        board.takeDamage(new Coord(j, i));
+      }
+    }
   }
 }

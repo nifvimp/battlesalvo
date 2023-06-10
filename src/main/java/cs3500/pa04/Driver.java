@@ -8,7 +8,7 @@ import cs3500.pa04.model.ArtificialPlayer;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.ManualPlayer;
 import cs3500.pa04.model.Player;
-import cs3500.pa04.model.ProbabilityPlayer;
+import cs3500.pa04.model.RandomPlayer;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.IOException;
@@ -34,11 +34,12 @@ public class Driver {
       controller = new LocalController(player, opponent, view, communicator, observer);
     } else {
       try {
-        Socket socket = new Socket("0.0.0.0", 35001);
-        controller = new ProxyController(socket, new ProbabilityPlayer(observer), view, observer);
-      } catch (IOException e) {
-        e.printStackTrace();
-        System.err.println("There was an error connecting to the server.");
+        Socket socket = new Socket(args[0], Integer.parseInt(args[1]));
+        controller = new ProxyController(socket, new RandomPlayer(observer), view, observer);
+      } catch (IOException | NumberFormatException e) {
+        System.err.println(
+            "There was an error connecting to the server, or host and port were incorrect."
+        );
         return;
       }
     }

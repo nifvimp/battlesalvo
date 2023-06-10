@@ -4,7 +4,6 @@ package cs3500.pa04.controller;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameModel;
-import cs3500.pa04.model.GameModelImpl;
 import cs3500.pa04.model.GameResult;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.ShipType;
@@ -33,7 +32,7 @@ public class LocalController implements Controller {
   public LocalController(Player player, Player opponent, GameView view,
                          UserCommunicator communicator,
                          BoardObserver observer) {
-    this.model = new GameModelImpl(observer, player, opponent);
+    this.model = new GameModel(observer, player, opponent);
     this.communicator = communicator;
     this.observer = observer;
     this.view = view;
