@@ -2,14 +2,18 @@ package cs3500.pa04.model;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,14 +64,26 @@ class GameModelImplTest {
     // state of both player boards are the same because they use the same seed for their random
     assertEquals("""
             Your Board:
-            \tB - - B C C
-            \tB - D B C C
-            \tB U D B C C
-            \tB U D B C C
-            \tB U D B C C
-            \t- - - - C C
-            """
-            .repeat(2),
+                        
+                    0  1  2  3  4  5
+                  0 B  ~  ~  B  C  C
+                  1 B  ~  D  B  C  C
+                  2 B  U  D  B  C  C
+                  3 B  U  D  B  C  C
+                  4 B  U  D  B  C  C
+                  5 ~  ~  ~  ~  C  C
+                        
+            Your Board:
+                        
+                    0  1  2  3  4  5
+                  0 B  ~  ~  B  C  C
+                  1 B  ~  D  B  C  C
+                  2 B  U  D  B  C  C
+                  3 B  U  D  B  C  C
+                  4 B  U  D  B  C  C
+                  5 ~  ~  ~  ~  C  C
+                        
+            """,
         testOut.toString());
   }
 
@@ -79,12 +95,15 @@ class GameModelImplTest {
     view.displayPlayerBoard(model.getPlayerBoard());
     assertEquals("""
             Your Board:
-            \tB - - B C C
-            \tB - D B C C
-            \tB U D B C C
-            \tB U D B C C
-            \tB U D B C C
-            \t- - - - C C
+                        
+                    0  1  2  3  4  5
+                  0 B  ~  ~  B  C  C
+                  1 B  ~  D  B  C  C
+                  2 B  U  D  B  C  C
+                  3 B  U  D  B  C  C
+                  4 B  U  D  B  C  C
+                  5 ~  ~  ~  ~  C  C
+                        
             """,
         testOut.toString());
   }
@@ -94,15 +113,18 @@ class GameModelImplTest {
    */
   @Test
   void getOpponentBoard() {
-    view.displayPlayerBoard(model.getOpponentBoard());
+    view.displayOpponentBoard(model.getOpponentBoard());
     assertEquals("""
-            Your Board:
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
+            Opponent Board Data:
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  ~  ~
+                  1 ~  ~  ~  ~  ~  ~
+                  2 ~  ~  ~  ~  ~  ~
+                  3 ~  ~  ~  ~  ~  ~
+                  4 ~  ~  ~  ~  ~  ~
+                  5 ~  ~  ~  ~  ~  ~
+                        
             """,
         testOut.toString());
   }
@@ -116,41 +138,49 @@ class GameModelImplTest {
     view.displayPlayerBoard(observer.getBoard(player1).getPlayerBoard());
     view.displayPlayerBoard(observer.getBoard(player2).getPlayerBoard());
     assertEquals("""
-        Please Enter 6 Shots:
+        Please enter 6 shots:
         Your Board:
-        \tB - - B C C
-        \tB - D B C C
-        \tH S D B H C
-        \tB S D B C H
-        \tB S D B C C
-        \t- - M M C H
+                
+                0  1  2  3  4  5
+              0 B  ~  ~  B  C  C
+              1 B  ~  D  B  C  C
+              2 H  U  D  B  H  C
+              3 B  U  D  B  C  H
+              4 B  U  D  B  C  C
+              5 ~  ~  X  X  C  H
+                
         Your Board:
-        \tH M M H H H
-        \tB - D B C C
-        \tB S D B C C
-        \tB S D B C C
-        \tB S D B C C
-        \t- - - - C C
+                
+                0  1  2  3  4  5
+              0 H  X  X  H  H  H
+              1 B  ~  D  B  C  C
+              2 B  U  D  B  C  C
+              3 B  U  D  B  C  C
+              4 B  U  D  B  C  C
+              5 ~  ~  ~  ~  C  C
+                      
         """, testOut.toString());
   }
 
-//  /**
-//   * GameResult gets the correct game results.
-//   */
-//  @Test
-//  void getGameResult() {
-//    assertNull(model.getGameResult());
-//    Board opponentBoard = observer.getBoard(player2.name());
-//    Board playerBoard = observer.getBoard(player1.name());
-//    final Set<Coord> allCoords = new HashSet<>(playerBoard.validShots());
-//    opponentBoard.hits.addAll(opponentBoard.shotsLeft);
-//    opponentBoard.shotsLeft.clear();
-//    assertEquals(GameResult.WIN, model.getGameResult());
-//    playerBoard.hits.addAll(playerBoard.shotsLeft);
-//    playerBoard.shotsLeft.clear();
-//    assertEquals(GameResult.TIE, model.getGameResult());
-//    opponentBoard.hits.clear();
-//    opponentBoard.shotsLeft.addAll(allCoords);
-//    assertEquals(GameResult.LOSE, model.getGameResult());
-//  }
+  /**
+   * GameResult gets the correct game results.
+   */
+  @Test
+  void getGameResult() {
+    assertNull(model.getGameResult());
+    Board opponentBoard = observer.getBoard(player2);
+    Board playerBoard = observer.getBoard(player1);
+    Set<Coord> allCoords = new HashSet<>(playerBoard.validShots());
+    allCoords.forEach(opponentBoard::takeDamage);
+    assertEquals(GameResult.WIN, model.getGameResult());
+    allCoords = opponentBoard.validShots();
+    allCoords.forEach(playerBoard::takeDamage);
+    assertEquals(GameResult.DRAW, model.getGameResult());
+    setup();
+    playerBoard = observer.getBoard(player1);
+    opponentBoard = observer.getBoard(player2);
+    allCoords = opponentBoard.validShots();
+    allCoords.forEach(playerBoard::takeDamage);
+    assertEquals(GameResult.LOSE, model.getGameResult());
+  }
 }

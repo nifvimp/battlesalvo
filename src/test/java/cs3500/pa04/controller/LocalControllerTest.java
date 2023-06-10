@@ -34,29 +34,29 @@ public class LocalControllerTest {
         new StringReader("""
         6 6
         1 1 1 3
-        0 0
-        1 0
-        2 0
-        1 3
-        2 3
-        3 3
-        1 4
-        2 4
-        3 4
+        4 0
+        5 0
+        0 1
+        1 1
+        2 1
+        4 1
+        5 1
         0 2
         1 2
         2 2
         3 2
-        5 0
-        5 1
-        5 2
-        5 3
-        5 4
-        4 0
-        4 1
         4 2
+        5 2
+        1 3
+        2 3
+        3 3
         4 3
+        5 3
+        1 4
+        2 4
+        3 4
         4 4
+        5 4
         4 5
         """));
     BoardObserver observer = new BoardObserver();
@@ -72,82 +72,118 @@ public class LocalControllerTest {
   public void testRun() {
     controller.run();
     assertEquals("""
+            Hello! Welcome to the OOD BattleSalvo Game!
+                        
+            Boards can be between sizes 6 and 15, and dimensions do not need to match.
             Please enter a valid height and width below:
+            ------------------------------------------------------
             Please enter your fleet in the order [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE].
+            Remember, your fleet may not exceed size 6.
+            ------------------------------------------------------
             Opponent Board Data:
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- - - - - -
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  ~  ~
+                  1 ~  ~  ~  ~  ~  ~
+                  2 ~  ~  ~  ~  ~  ~
+                  3 ~  ~  ~  ~  ~  ~
+                  4 ~  ~  ~  ~  ~  ~
+                  5 ~  ~  ~  ~  ~  ~
+                        
             Your Board:
-            \tS S S - C B
-            \t- - - - C B
-            \tD D D D C B
-            \t- S S S C B
-            \t- S S S C B
-            \t- - - - C -
-            Please Enter 6 Shots:
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  C  B
+                  1 U  U  U  ~  C  B
+                  2 D  D  D  D  C  B
+                  3 ~  U  U  U  C  B
+                  4 ~  U  U  U  C  B
+                  5 ~  ~  ~  ~  C  ~
+                        
+            Please enter 6 shots:
             Opponent Board Data:
-            \tH H H - - -
-            \t- - - - - -
-            \t- - - - - -
-            \t- H H H - -
-            \t- - - - - -
-            \t- - - - - -
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  H  H
+                  1 H  H  H  ~  H  ~
+                  2 ~  ~  ~  ~  ~  ~
+                  3 ~  ~  ~  ~  ~  ~
+                  4 ~  ~  ~  ~  ~  ~
+                  5 ~  ~  ~  ~  ~  ~
+                        
             Your Board:
-            \tH H S M C B
-            \t- - - - C B
-            \tD D D D C B
-            \t- S S H C B
-            \t- S S S H B
-            \t- - - M C -
-            Please Enter 6 Shots:
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  X  C  B
+                  1 U  U  U  ~  H  B
+                  2 D  D  D  D  H  B
+                  3 ~  U  U  U  C  B
+                  4 ~  U  U  U  C  B
+                  5 ~  X  ~  ~  H  X
+                        
+            Please enter 6 shots:
             Opponent Board Data:
-            \tH H H - - -
-            \t- - - - - -
-            \tH H H - - -
-            \t- H H H - -
-            \t- H H H - -
-            \t- - - - - -
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  H  H
+                  1 H  H  H  ~  H  H
+                  2 H  H  H  H  H  ~
+                  3 ~  ~  ~  ~  ~  ~
+                  4 ~  ~  ~  ~  ~  ~
+                  5 ~  ~  ~  ~  ~  ~
+                        
             Your Board:
-            \tH H S M C B
-            \t- M - - C B
-            \tD D D D C B
-            \t- S S H C B
-            \t- S H S H B
-            \tM - M M C -
-            Please Enter 6 Shots:
+                        
+                    0  1  2  3  4  5
+                  0 X  ~  ~  X  C  B
+                  1 U  U  U  ~  H  B
+                  2 D  D  D  D  H  B
+                  3 X  U  U  H  C  B
+                  4 ~  U  U  U  C  H
+                  5 X  X  ~  ~  H  X
+                        
+            Please enter 6 shots:
             Opponent Board Data:
-            \tH H H - - H
-            \t- - - - - H
-            \tH H H H - H
-            \t- H H H - H
-            \t- H H H - H
-            \t- - - - - -
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  H  H
+                  1 H  H  H  ~  H  H
+                  2 H  H  H  H  H  H
+                  3 ~  H  H  H  H  H
+                  4 ~  ~  ~  ~  ~  ~
+                  5 ~  ~  ~  ~  ~  ~
+                        
             Your Board:
-            \tH H S M C B
-            \t- M - M C B
-            \tD H D D C B
-            \t- S S H C H
-            \t- S H S H B
-            \tM - M M C -
-            Please Enter 6 Shots:
+                        
+                    0  1  2  3  4  5
+                  0 X  ~  ~  X  C  H
+                  1 U  U  U  ~  H  B
+                  2 D  D  D  D  H  B
+                  3 X  U  H  H  C  B
+                  4 ~  U  U  U  C  H
+                  5 X  X  X  X  H  X
+                        
+            Please enter 6 shots:
             Opponent Board Data:
-            \tH H H - H H
-            \t- - - - H H
-            \tH H H H H H
-            \t- H H H H H
-            \t- H H H H H
-            \t- - - - H -
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  H  H
+                  1 H  H  H  ~  H  H
+                  2 H  H  H  H  H  H
+                  3 ~  H  H  H  H  H
+                  4 ~  H  H  H  H  H
+                  5 ~  ~  ~  ~  H  ~
+                        
             Your Board:
-            \tH H S M C B
-            \t- M - M C B
-            \tD H D D C B
-            \t- S S H C H
-            \t- S H S H B
-            \tM M M M C -
+                        
+                    0  1  2  3  4  5
+                  0 X  ~  ~  X  C  H
+                  1 U  H  U  ~  H  B
+                  2 D  D  D  D  H  B
+                  3 X  U  H  H  H  B
+                  4 ~  H  U  U  C  H
+                  5 X  X  X  X  H  X
+                        
             You Won!
             All opponent ships sunk.
             """,

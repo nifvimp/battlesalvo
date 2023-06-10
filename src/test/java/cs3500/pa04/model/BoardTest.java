@@ -18,7 +18,7 @@ import cs3500.pa04.MockOutputStream;
 /**
  * Tests the PlayerBoard class.
  */
-public class PlayerBoardTest {
+public class BoardTest {
   private Board testBoard;
   private GameView testView;
   private MockOutputStream testOut;
@@ -41,16 +41,39 @@ public class PlayerBoardTest {
    * Tests if the board representation gotten from the board is correct.
    */
   @Test
-  public void testGetBoardScene() {
+  public void testGetPlayerBoard() {
     String expected = """
         Your Board:
-        \t- - - - -
-        \t- - - - S
-        \tD D D D S
-        \t- - - - S
-        \t- - - - -
+                
+                0  1  2  3  4
+              0 ~  ~  ~  ~  ~
+              1 ~  ~  ~  ~  U
+              2 D  D  D  D  U
+              3 ~  ~  ~  ~  U
+              4 ~  ~  ~  ~  ~
+                
         """;
     testView.displayPlayerBoard(testBoard.getPlayerBoard());
+    assertEquals(expected, testOut.toString());
+  }
+
+  /**
+   * Tests if the board representation gotten from the board is correct.
+   */
+  @Test
+  public void testGetOpponentBoard() {
+    String expected = """
+        Opponent Board Data:
+                
+                0  1  2  3  4
+              0 ~  ~  ~  ~  ~
+              1 ~  ~  ~  ~  U
+              2 D  D  D  D  U
+              3 ~  ~  ~  ~  U
+              4 ~  ~  ~  ~  ~
+                
+        """;
+    testView.displayOpponentBoard(testBoard.getPlayerBoard());
     assertEquals(expected, testOut.toString());
   }
 
@@ -66,11 +89,14 @@ public class PlayerBoardTest {
     assertEquals(1, testBoard.shipsLeft());
     String expected = """
         Your Board:
-        \t- - - - -
-        \t- - - - H
-        \tD D D D H
-        \t- - - - H
-        \t- - - - -
+                
+                0  1  2  3  4
+              0 ~  ~  ~  ~  ~
+              1 ~  ~  ~  ~  S
+              2 D  D  D  D  S
+              3 ~  ~  ~  ~  S
+              4 ~  ~  ~  ~  ~
+                
         """;
     testView.displayPlayerBoard(testBoard.getPlayerBoard());
     assertEquals(expected, testOut.toString());
@@ -87,24 +113,46 @@ public class PlayerBoardTest {
     assertFalse(testBoard.takeDamage(coord2));
     String expected = """
         Your Board:
-        \tM - - - -
-        \t- - - - S
-        \tD D D D H
-        \t- - - - S
-        \t- - - - -
+                
+                0  1  2  3  4
+              0 X  ~  ~  ~  ~
+              1 ~  ~  ~  ~  U
+              2 D  D  D  D  H
+              3 ~  ~  ~  ~  U
+              4 ~  ~  ~  ~  ~
+                
         """;
     testView.displayPlayerBoard(testBoard.getPlayerBoard());
     assertEquals(expected, testOut.toString());
   }
 
   /**
-   * Tests if validShots() returns the correct coords left to available shoot.
+   * Tests if marking the opponent board registers correctly.
    */
   @Test
-  public void testValidShots() {
+  void markOpponentTest() {
+    Coord coord1 = new Coord(4, 2);
+    Coord coord2 = new Coord(0, 0);
+    assertTrue(testBoard.validShots().contains(coord1));
+    assertTrue(testBoard.validShots().contains(coord2));
+    testBoard.markOpponent(coord1, true);
+    testBoard.markOpponent(coord2, false);
+    assertFalse(testBoard.validShots().contains(coord1));
+    assertFalse(testBoard.validShots().contains(coord2));
+  }
+
+  /**
+   //   * Tests if validShots() returns the correct coords left to available shoot.
+   //   */
+  @Test
+  public void validShots() {
     for (int i = 0; i < 5; i++) {
       for (int j = 1; j < 5; j++) {
-        testBoard.takeDamage(new Coord(j, i));
+        if ((i + j) % 3 == 0) {
+          testBoard.markOpponent(new Coord(j, i), true);
+        } else {
+          testBoard.markOpponent(new Coord(j, i), false);
+        }
       }
     }
     Set<Coord> expectedValid = new HashSet<>();

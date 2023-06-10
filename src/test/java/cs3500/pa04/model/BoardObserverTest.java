@@ -34,7 +34,7 @@ public class BoardObserverTest {
         new Ship(ShipType.SUBMARINE, new Coord(4, 1), Orientation.VERTICAL))
     );
     p2Board = new Board(5, 5, List.of(
-        new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.VERTICAL))
+        new Ship(ShipType.SUBMARINE, new Coord(0, 2), Orientation.VERTICAL))
     );
     p1 = new RandomPlayer(observer);
     p2 = new RandomPlayer(observer);
@@ -50,7 +50,7 @@ public class BoardObserverTest {
   public void registerBoard() {
     assertNull(observer.getBoard(p2));
     observer.registerBoard(p2, p2Board);
-    assertEquals(p1Board, observer.getBoard(p2));
+    assertEquals(p2Board, observer.getBoard(p2));
   }
 
 
@@ -62,15 +62,18 @@ public class BoardObserverTest {
     assertEquals(p1Board, observer.getBoard(p1));
     p1Board.takeDamage(new Coord(0, 0));
     p1Board.takeDamage(new Coord(1, 1));
-    p1Board.takeDamage(new Coord(2, 2));
+    p1Board.takeDamage(new Coord(4, 2));
     assertEquals(p1Board, observer.getBoard(p1));
     String expected = """
         Your Board:
-        \tX - - - -
-        \t- X - - -
-        \tD D H D -
-        \t- - - - -
-        \t- - - - -
+                
+                0  1  2  3  4
+              0 X  ~  ~  ~  ~
+              1 ~  X  ~  ~  U
+              2 ~  ~  ~  ~  H
+              3 ~  ~  ~  ~  U
+              4 ~  ~  ~  ~  ~
+              
         """;
     testView.displayPlayerBoard(observer.getBoard(p1).getPlayerBoard());
     assertEquals(expected, testOut.toString());
