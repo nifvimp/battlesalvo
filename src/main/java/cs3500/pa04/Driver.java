@@ -8,7 +8,6 @@ import cs3500.pa04.model.ArtificialPlayer;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.ManualPlayer;
 import cs3500.pa04.model.Player;
-import cs3500.pa04.model.RandomPlayer;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class Driver {
     } else {
       try {
         Socket socket = new Socket(args[0], Integer.parseInt(args[1]));
-        controller = new ProxyController(socket, new RandomPlayer(observer), view, observer);
+        controller = new ProxyController(socket, new ArtificialPlayer(observer), view, observer);
       } catch (IOException | NumberFormatException e) {
         System.err.println(
             "There was an error connecting to the server, or host and port were incorrect."

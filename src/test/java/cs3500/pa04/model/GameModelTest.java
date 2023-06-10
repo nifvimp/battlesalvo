@@ -6,10 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import cs3500.pa04.MockInputStream;
 import cs3500.pa04.MockOutputStream;
-import cs3500.pa04.MockRandom;
 import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Map;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
  * Tests the GameModelImpl class.
  */
 public class GameModelTest {
+  private static final long SEED = 0;
   private final Map<ShipType, Integer> specifications = Map.of(
       ShipType.CARRIER, 2, ShipType.BATTLESHIP,
       2, ShipType.DESTROYER, 1, ShipType.SUBMARINE, 1
@@ -28,8 +30,8 @@ public class GameModelTest {
   private Player player2;
   private GameView view;
   private MockOutputStream testOut;
-  private MockInputStream testIn;
-  private MockRandom testRand;
+  private MockInputStream testIn1;
+  private MockInputStream testIn2;
   private GameModel model;
 
   /**
@@ -38,12 +40,14 @@ public class GameModelTest {
   @BeforeEach
   public void setup() {
     testOut = new MockOutputStream();
-    testIn = new MockInputStream();
-    testRand = new MockRandom().useRandom();
-    view = new TerminalView(testOut.toPrintStream(), testIn.toReadable());
+    testIn1 = new MockInputStream();
+    testIn2 = new MockInputStream();
+    view = new TerminalView(testOut.toPrintStream(), testIn1.toReadable());
     observer = new BoardObserver();
-    player1 = new ManualPlayer(observer, new UserCommunicator(view), new Random(0));
-    player2 = new RandomPlayer(observer, testRand);
+    player1 = new ManualPlayer(observer, new UserCommunicator(view), new Random(SEED));
+    player2 = new ManualPlayer(observer, new UserCommunicator(
+        new TerminalView(new PrintStream(new ByteArrayOutputStream()),
+            testIn2.toReadable())), new Random(SEED));
     model = new GameModel(observer, player1, player2);
     model.setup(6, 6, specifications);
   }
@@ -116,7 +120,7 @@ public class GameModelTest {
    */
   @Test
   public void testVolley() {
-    testIn.input("""
+    testIn1.input("""
         0 0
         1 0
         2 0
@@ -124,8 +128,14 @@ public class GameModelTest {
         4 0
         5 0
         """);
-    testRand.useInjected();
-    testRand.inject(6, 6, 6, 6 ,6, 6);
+    testIn2.input("""
+        0 1
+        1 1
+        2 1
+        3 1
+        4 1
+        5 1
+        """);
     model.volley();
     view.displayPlayerBoard(observer.getBoard(player1).getPlayerBoard());
     view.displayPlayerBoard(observer.getBoard(player2).getPlayerBoard());
@@ -197,6 +207,13 @@ public class GameModelTest {
     obliterate(opponentBoard);
     obliterate(playerBoard);
     assertEquals(GameResult.DRAW, model.getGameResult());
+  }
+
+  @Test
+  public void testEndGame() {
+    model.endGame(GameResult.WIN, "You Won!");
+    model.endGame(GameResult.LOSE, "You Lost.");
+    model.endGame(GameResult.DRAW, "You Tied.");
   }
 
   /**

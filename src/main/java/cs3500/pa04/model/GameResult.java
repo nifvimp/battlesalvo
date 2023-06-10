@@ -5,10 +5,9 @@ package cs3500.pa04.model;
  */
 public enum GameResult {
   WIN("You Won!"),
-  LOSE("You Lost..."),
+  LOSE("You Lost."),
   DRAW("You Tied.");
 
-  // TODO: are messages necessary?
   private final String message;
 
   GameResult(String message) {

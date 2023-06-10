@@ -23,8 +23,6 @@ public class BoardObserver {
     gameBoards.put(player, playerBoard);
   }
 
-  // TODO: make return from observer view only stuff.
-
   /**
    * Gets the player board of this player.
    *
