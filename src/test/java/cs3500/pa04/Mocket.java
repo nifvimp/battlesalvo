@@ -72,7 +72,7 @@ public class Mocket extends Socket {
   public JsonNode getLastReceived() {
     String output = out.toString().stripTrailing();
     int start = output.lastIndexOf(System.lineSeparator());
-    String lastReceived = (start <= 0) ? output : output.substring(start + 2);
+    String lastReceived = (start <= 0) ? output : output.substring(start);
     JsonNode json = null;
     try {
       json = MAPPER.readValue(lastReceived, JsonNode.class);

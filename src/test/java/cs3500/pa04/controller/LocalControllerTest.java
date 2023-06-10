@@ -73,13 +73,15 @@ public class LocalControllerTest {
     controller.run();
     assertEquals("""
             Hello! Welcome to the OOD BattleSalvo Game!
-                        
+            """ + System.lineSeparator() + """
             Boards can be between sizes 6 and 15, and dimensions do not need to match.
             Please enter a valid height and width below:
-            ------------------------------------------------------
+            ------------------------------------------------------""" + System.lineSeparator()
+            + """
             Please enter your fleet in the order [CARRIER, BATTLESHIP, DESTROYER, SUBMARINE].
             Remember, your fleet may not exceed size 6.
-            ------------------------------------------------------
+            ------------------------------------------------------""" + System.lineSeparator()
+            + """
             Opponent Board Data:
                         
                     0  1  2  3  4  5
@@ -89,7 +91,7 @@ public class LocalControllerTest {
                   3 ~  ~  ~  ~  ~  ~
                   4 ~  ~  ~  ~  ~  ~
                   5 ~  ~  ~  ~  ~  ~
-                        
+            """ + System.lineSeparator() + """
             Your Board:
                         
                     0  1  2  3  4  5
@@ -99,8 +101,8 @@ public class LocalControllerTest {
                   3 ~  U  U  U  C  B
                   4 ~  U  U  U  C  B
                   5 ~  ~  ~  ~  C  ~
-                        
-            Please enter 6 shots:
+            """ + System.lineSeparator() + "Please enter 6 shots:"
+            + System.lineSeparator() + """
             Opponent Board Data:
                         
                     0  1  2  3  4  5
@@ -110,18 +112,18 @@ public class LocalControllerTest {
                   3 ~  ~  ~  ~  ~  ~
                   4 ~  ~  ~  ~  ~  ~
                   5 ~  ~  ~  ~  ~  ~
-                        
+            """ + System.lineSeparator() + """
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 ~  ~  ~  X  C  B
-                  1 U  U  U  ~  H  B
-                  2 D  D  D  D  H  B
-                  3 ~  U  U  U  C  B
-                  4 ~  U  U  U  C  B
-                  5 ~  X  ~  ~  H  X
-                        
-            Please enter 6 shots:
+                  0 ~  ~  ~  ~  C  H
+                  1 U  U  U  ~  C  B
+                  2 D  D  H  D  C  B
+                  3 ~  U  U  U  C  H
+                  4 ~  U  U  U  C  H
+                  5 ~  X  ~  X  C  ~
+            """ + System.lineSeparator() + "Please enter 6 shots:"
+            + System.lineSeparator() + """
             Opponent Board Data:
                         
                     0  1  2  3  4  5
@@ -131,18 +133,18 @@ public class LocalControllerTest {
                   3 ~  ~  ~  ~  ~  ~
                   4 ~  ~  ~  ~  ~  ~
                   5 ~  ~  ~  ~  ~  ~
-                        
+            """ + System.lineSeparator() + """
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 X  ~  ~  X  C  B
-                  1 U  U  U  ~  H  B
-                  2 D  D  D  D  H  B
-                  3 X  U  U  H  C  B
+                  0 X  ~  ~  ~  C  H
+                  1 U  U  H  ~  C  H
+                  2 D  D  H  D  C  B
+                  3 ~  U  H  U  H  H
                   4 ~  U  U  U  C  H
-                  5 X  X  ~  ~  H  X
-                        
-            Please enter 6 shots:
+                  5 ~  X  ~  X  C  ~
+            """ + System.lineSeparator() + "Please enter 6 shots:"
+            + System.lineSeparator() + """
             Opponent Board Data:
                         
                     0  1  2  3  4  5
@@ -152,18 +154,18 @@ public class LocalControllerTest {
                   3 ~  H  H  H  H  H
                   4 ~  ~  ~  ~  ~  ~
                   5 ~  ~  ~  ~  ~  ~
-                        
+            """ + System.lineSeparator() + """
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 X  ~  ~  X  C  H
-                  1 U  U  U  ~  H  B
-                  2 D  D  D  D  H  B
-                  3 X  U  H  H  C  B
-                  4 ~  U  U  U  C  H
-                  5 X  X  X  X  H  X
-                        
-            Please enter 6 shots:
+                  0 X  ~  ~  ~  H  H
+                  1 U  U  H  X  C  H
+                  2 H  D  H  D  C  B
+                  3 ~  U  H  U  H  H
+                  4 ~  U  U  H  C  H
+                  5 ~  X  ~  X  C  ~
+            """ + System.lineSeparator() + "Please enter 6 shots:"
+            + System.lineSeparator() + """
             Opponent Board Data:
                         
                     0  1  2  3  4  5
@@ -173,20 +175,20 @@ public class LocalControllerTest {
                   3 ~  H  H  H  H  H
                   4 ~  H  H  H  H  H
                   5 ~  ~  ~  ~  H  ~
-                        
+            """ + System.lineSeparator() + """
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 X  ~  ~  X  C  H
-                  1 U  H  U  ~  H  B
-                  2 D  D  D  D  H  B
-                  3 X  U  H  H  H  B
-                  4 ~  H  U  U  C  H
-                  5 X  X  X  X  H  X
-                        
+                  0 X  ~  ~  X  H  S
+                  1 U  U  H  X  C  S
+                  2 H  D  H  D  C  S
+                  3 ~  U  H  U  H  S
+                  4 ~  U  U  H  C  S
+                  5 ~  X  ~  X  C  X
+            """ + System.lineSeparator() + """
             You Won!
-            All opponent ships sunk.
-            """,
+            All opponent ships sunk."""
+            + System.lineSeparator(),
         testOut.toString()
     );
   }
