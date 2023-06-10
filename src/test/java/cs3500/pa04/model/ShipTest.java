@@ -86,7 +86,7 @@ public class ShipTest {
   @Test
   public void testGetOccupied() {
     assertEquals(Set.of(
-        new Coord(0, 2), new Coord(1, 2), new Coord(2, 2), new Coord(3, 2)),
+            new Coord(0, 2), new Coord(1, 2), new Coord(2, 2), new Coord(3, 2)),
         ship1.getOccupied());
     assertEquals(Set.of(
         new Coord(4, 1), new Coord(4, 2), new Coord(4, 3)), ship2.getOccupied());
@@ -107,21 +107,17 @@ public class ShipTest {
    */
   @Test
   public void testEquals() {
-    assertFalse(ship1.equals(ship2));
-    assertFalse(ship1.equals(10));
-    assertTrue(ship1.equals(ship1));
-    assertTrue(ship1.equals(
-        new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.HORIZONTAL))
-    );
-    assertFalse(ship1.equals(
-        new Ship(ShipType.DESTROYER, new Coord(0, 3), Orientation.HORIZONTAL))
-    );
-    assertFalse(ship1.equals(
-        new Ship(ShipType.SUBMARINE, new Coord(0, 2), Orientation.HORIZONTAL))
-    );
-    assertFalse(ship1.equals(
-        new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.VERTICAL))
-    );
+    assertNotEquals(ship1, ship2);
+    assertNotEquals(10, ship1);
+    assertEquals(ship1, ship1);
+    assertEquals(ship1,
+        new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.HORIZONTAL));
+    assertNotEquals(ship1,
+        new Ship(ShipType.DESTROYER, new Coord(0, 3), Orientation.HORIZONTAL));
+    assertNotEquals(ship1,
+        new Ship(ShipType.SUBMARINE, new Coord(0, 2), Orientation.HORIZONTAL));
+    assertNotEquals(ship1,
+        new Ship(ShipType.DESTROYER, new Coord(0, 2), Orientation.VERTICAL));
   }
 
   /**
@@ -136,6 +132,6 @@ public class ShipTest {
             new Coord(0, 2),
             Orientation.HORIZONTAL)
             .hashCode()
-        );
+    );
   }
 }

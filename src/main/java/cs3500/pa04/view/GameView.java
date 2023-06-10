@@ -3,8 +3,6 @@ package cs3500.pa04.view;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.GameResult;
 
-// TODO: invalid methods may not be necessary (especially for the interface)
-
 /**
  * Visual driver for a battle salvo game.
  */

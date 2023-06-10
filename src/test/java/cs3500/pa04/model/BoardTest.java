@@ -6,23 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import cs3500.pa04.view.GameView;
-import cs3500.pa04.view.TerminalView;
-import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import cs3500.pa04.MockOutputStream;
 
 /**
  * Tests the PlayerBoard class.
  */
 public class BoardTest {
   private Board testBoard;
-  private GameView testView;
-  private MockOutputStream testOut;
 
   /**
    * Sets up a test board and test output.
@@ -34,8 +28,6 @@ public class BoardTest {
         new Ship(ShipType.SUBMARINE, new Coord(4, 1), Orientation.VERTICAL)
     );
     testBoard = new Board(5, 5, ships);
-    testOut = new MockOutputStream();
-    testView = new TerminalView(testOut.toPrintStream(), new StringReader(""));
   }
 
   /**
@@ -44,12 +36,12 @@ public class BoardTest {
   @Test
   public void getPlayerBoard() {
     assertArrayEquals(new char[][] {
-            {'~', '~', '~', '~', '~'},
-            {'~', '~', '~', '~', 'U'},
-            {'D', 'D', 'D', 'D', 'U'},
-            {'~', '~', '~', '~', 'U'},
-            {'~', '~', '~', '~', '~'}
-        }, testBoard.getPlayerBoard());
+        {'~', '~', '~', '~', '~'},
+        {'~', '~', '~', '~', 'U'},
+        {'D', 'D', 'D', 'D', 'U'},
+        {'~', '~', '~', '~', 'U'},
+        {'~', '~', '~', '~', '~'}
+    }, testBoard.getPlayerBoard());
   }
 
   /**

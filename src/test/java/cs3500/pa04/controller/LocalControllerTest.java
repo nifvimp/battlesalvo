@@ -3,6 +3,7 @@ package cs3500.pa04.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cs3500.pa04.MockOutputStream;
 import cs3500.pa04.model.ArtificialPlayer;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.ManualPlayer;
@@ -13,10 +14,6 @@ import java.io.StringReader;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import cs3500.pa04.MockOutputStream;
-
-
-// TODO: fix. Broken because of artificial player
 
 /**
  * Tests the LocalController class.
@@ -34,33 +31,37 @@ public class LocalControllerTest {
     testOut = new MockOutputStream();
     GameView view = new TerminalView(testOut.toPrintStream(),
         new StringReader("""
-        6 6
-        1 1 1 3
-        4 0
-        5 0
-        0 1
-        1 1
-        2 1
-        4 1
-        5 1
-        0 2
-        1 2
-        2 2
-        3 2
-        4 2
-        5 2
-        1 3
-        2 3
-        3 3
-        4 3
-        5 3
-        1 4
-        2 4
-        3 4
-        4 4
-        5 4
-        4 5
-        """));
+            6 6
+            1 1 1 3
+            4 0
+            5 0
+            0 1
+            1 1
+            2 1
+            4 1
+            5 1
+            0 2
+            1 2
+            2 2
+            3 2
+            4 2
+            5 2
+            1 3
+            2 3
+            3 3
+            4 3
+            5 3
+            1 4
+            2 4
+            3 4
+            4 4
+            5 4
+            4 5
+            0 0
+            1 0
+            2 0
+            3 0
+            """));
     BoardObserver observer = new BoardObserver();
     Player player1 = new ManualPlayer(observer, new UserCommunicator(view), new Random(SEED));
     Player player2 = new ArtificialPlayer(observer, new Random(SEED));
@@ -139,10 +140,10 @@ public class LocalControllerTest {
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 X  ~  ~  ~  C  H
-                  1 U  U  H  ~  C  H
-                  2 D  D  H  D  C  B
-                  3 ~  U  H  U  H  H
+                  0 ~  ~  ~  ~  C  H
+                  1 U  U  H  ~  C  B
+                  2 D  H  H  H  C  H
+                  3 ~  U  H  U  C  H
                   4 ~  U  U  U  C  H
                   5 ~  X  ~  X  C  ~
             """ + System.lineSeparator() + "Please enter 6 shots:"
@@ -160,13 +161,13 @@ public class LocalControllerTest {
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 X  ~  ~  ~  H  H
-                  1 U  U  H  X  C  H
-                  2 H  D  H  D  C  B
-                  3 ~  U  H  U  H  H
-                  4 ~  U  U  H  C  H
+                  0 ~  ~  ~  ~  C  S
+                  1 U  U  H  X  C  S
+                  2 D  H  H  H  H  S
+                  3 ~  U  H  H  C  S
+                  4 ~  U  U  U  C  S
                   5 ~  X  ~  X  C  ~
-            """ + System.lineSeparator() + "Please enter 6 shots:"
+            """ + System.lineSeparator() + "Please enter 5 shots:"
             + System.lineSeparator() + """
             Opponent Board Data:
                         
@@ -176,17 +177,38 @@ public class LocalControllerTest {
                   2 H  H  H  H  H  H
                   3 ~  H  H  H  H  H
                   4 ~  H  H  H  H  H
+                  5 ~  ~  ~  ~  ~  ~
+            """ + System.lineSeparator() + """
+            Your Board:
+                        
+                    0  1  2  3  4  5
+                  0 ~  ~  ~  ~  C  S
+                  1 U  U  H  X  H  S
+                  2 D  H  H  H  H  S
+                  3 ~  U  H  H  H  S
+                  4 ~  U  U  H  C  S
+                  5 ~  X  ~  X  C  ~
+            """ + System.lineSeparator() + "Please enter 5 shots:"
+            + System.lineSeparator() + """
+            Opponent Board Data:
+                        
+                    0  1  2  3  4  5
+                  0 X  X  X  X  H  H
+                  1 H  H  H  ~  H  H
+                  2 H  H  H  H  H  H
+                  3 ~  H  H  H  H  H
+                  4 ~  H  H  H  H  H
                   5 ~  ~  ~  ~  H  ~
             """ + System.lineSeparator() + """
             Your Board:
                         
                     0  1  2  3  4  5
-                  0 X  ~  ~  X  H  S
-                  1 U  U  H  X  C  S
-                  2 H  D  H  D  C  S
-                  3 ~  U  H  U  H  S
+                  0 ~  ~  ~  ~  H  S
+                  1 U  U  H  X  H  S
+                  2 D  H  H  H  H  S
+                  3 ~  U  H  H  H  S
                   4 ~  U  U  H  C  S
-                  5 ~  X  ~  X  C  X
+                  5 ~  X  ~  X  C  ~
             """ + System.lineSeparator() + """
             You Won!
             All opponent ships sunk."""

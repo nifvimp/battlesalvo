@@ -35,7 +35,7 @@ public class ArtificialPlayer extends LocalPlayer {
 
   @Override
   public String name() {
-    return "Stack Player";
+    return "Artificial Player";
   }
 
   @Override
