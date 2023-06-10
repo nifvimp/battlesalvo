@@ -1,26 +1,30 @@
 package cs3500.pa04.model;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 /**
- * A local player of BattleSalvo, controlled by an advanced AI.
+ * A local AI player that uses a stack to shoot efficiently.
  */
 public class ArtificialPlayer extends LocalPlayer {
+  private final Stack<Coord> shotStack = new Stack<>();
   private final Random random;
-
-  private final List<TargetingLine> lines = new ArrayList<>();
-  private final List<Coord> potentialRoots = new ArrayList<>();
-
-  @Override
-  public String name() {
-    return "Artificial Player";
+  /**
+   * Constructor for AiPlayer, with a given seed.
+   *
+   * @param observer board observer of the game
+   * @param random the random seed to used to generate the board and get random shots
+   */
+  public ArtificialPlayer(BoardObserver observer, Random random) {
+    super(observer, random);
+    this.random = random;
   }
 
   /**
-   * Creates a new artificial player.
+   * Constructor for HumanPlayer, without a given seed.
+   * Generates a new random if one isn't passed in.
    *
    * @param observer board observer of the game
    */
@@ -29,78 +33,59 @@ public class ArtificialPlayer extends LocalPlayer {
     this.random = new Random();
   }
 
-  /**
-   * Creates a new artificial player for testing.
-   *
-   * @param observer board observer of the game
-   * @param random   random to randomize by
-   */
-  public ArtificialPlayer(BoardObserver observer, Random random) {
-    super(observer, random);
-    this.random = random;
+  @Override
+  public String name() {
+    return "Stack Player";
   }
 
-  protected List<Coord> loadShots() {
-    List<Coord> shots = new ArrayList<>();
+  @Override
+  public List<Coord> loadShots() {
+    ArrayList<Coord> shots = new ArrayList<>();
     List<Coord> validShots = new ArrayList<>(board.validShots());
-    for (int i = 0; i < board.shipsLeft() && validShots.size() > 0; i++) {
-      if (i < lines.size()) {
-        Coord shot = lines.get(i).nextShot(validShots);
-        if (shot != null) {
-          validShots.remove(shot);
-          shots.add(shot);
+    int validSum = validShots.size();
+    for (int i = Math.min(board.shipsLeft(), validSum); i > 0; i--) {
+      Coord shot;
+      do {
+        if (!shotStack.empty()) {
+          shot = shotStack.pop();
         } else {
-          randomShot(validShots, shots);
+          int randShot = random.nextInt(validShots.size());
+          shot = validShots.get(randShot);
         }
-      } else {
-       randomShot(validShots, shots);
-      }
+      } while (!validShots.contains(shot));
+      validShots.remove(shot);
+      shots.add(shot);
     }
-
-    // TODO: Improve Shooting Algorithm
     return shots;
-  }
-  private void randomShot(List<Coord> validShots, List<Coord> shots) {
-    int randomShot = random.nextInt(validShots.size());
-    Coord shot = validShots.get(randomShot);
-    validShots.remove(randomShot);
-    shots.add(shot);
-    potentialRoots.add(shot);
   }
 
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
-    for (Coord hit : shotsThatHitOpponentShips) {
-      board.markOpponent(hit, true);
-      if (potentialRoots.contains(hit)) {
-        addLines(hit);
-        potentialRoots.remove(hit);
-      }
+    super.successfulHits(shotsThatHitOpponentShips);
+    for (Coord coord : shotsThatHitOpponentShips) {
+      addAdjacentShots(coord);
     }
-    lastTurnShots.removeAll(shotsThatHitOpponentShips);
-    potentialRoots.clear();
-    for (TargetingLine line : lines) {
-      line.updateLine(lastTurnShots, board.validShots());
-    }
-    lines.removeIf(TargetingLine::isFinished);
-    for (Coord miss : lastTurnShots) {
-      board.markOpponent(miss, false);
-    }
-    lastTurnShots.clear();
   }
 
-  private void addLines(Coord coord) {
-    if (coord.y() - 1 >= 0 && board.validShots().contains(new Coord(coord.x(), coord.y() - 1))) {
-        lines.add(new TargetingLine(coord, 0, -1, board));
-    }
-    if (coord.y() + 1 <= height - 1 && board.validShots().contains(new Coord(coord.x(), coord.y() + 1))) {
-      lines.add(new TargetingLine(coord, 0, 1, board));
-    }
-    if (coord.x() + 1 <= width - 1 && board.validShots().contains(new Coord(coord.x() + 1, coord.y()))) {
-      lines.add(new TargetingLine(coord, 1, 0, board));
-    }
-    if (coord.x() - 1 >= 0 && board.validShots().contains(new Coord(coord.x() - 1, coord.y()))) {
-      lines.add(new TargetingLine(coord, -1, 0, board));
+  /**
+   * Adds any valid shot next to a coordinate to the shot stack.
+   *
+   * @param coord the coordinate to add around
+   */
+  private void addAdjacentShots(Coord coord) {
+    List<Coord> coords = new ArrayList<>();
+    coords.add(new Coord(coord.x() + 1, coord.y()));
+    coords.add(new Coord(coord.x() - 1, coord.y()));
+    coords.add(new Coord(coord.x(), coord.y() + 1));
+    coords.add(new Coord(coord.x(), coord.y() - 1));
+    for (Coord adjacentCoord : coords) {
+      if ((adjacentCoord.x() < width && adjacentCoord.x() >= 0)
+          && adjacentCoord.y() < height && adjacentCoord.y() >= 0) {
+        if (board.validShots().contains(adjacentCoord)) {
+          shotStack.push(adjacentCoord);
+        }
+      }
     }
   }
+
 }
