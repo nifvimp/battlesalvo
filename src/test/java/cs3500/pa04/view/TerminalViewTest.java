@@ -191,6 +191,9 @@ public class TerminalViewTest {
         + System.lineSeparator(), testOut.toString());
   }
 
+  /**
+   * Tests getting a shot from the user.
+   */
   @Test
   public void testGetShot() {
     testIn.input("""

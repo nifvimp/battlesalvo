@@ -119,8 +119,8 @@ public class Ship {
     if (!(o instanceof Ship ship)) {
       return false;
     }
-    return type == ship.type && startingCoord.equals(ship.startingCoord) &&
-        orientation == ship.orientation;
+    return type == ship.type && startingCoord.equals(ship.startingCoord)
+        && orientation == ship.orientation;
   }
 
   @Override

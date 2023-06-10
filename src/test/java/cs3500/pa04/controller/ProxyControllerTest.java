@@ -31,6 +31,9 @@ import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for class ProxyController.
+ */
 public class ProxyControllerTest {
   private static final ObjectMapper MAPPER = new ObjectMapper();
   private Mocket server;
@@ -38,6 +41,9 @@ public class ProxyControllerTest {
   private MockOutputStream viewOutput;
   private ProxyController controller;
 
+  /**
+   * Setup for each test, creates input and output objects along with the proxy controller.
+   */
   @BeforeEach
   public void setup() {
     BoardObserver observer = new BoardObserver();
@@ -54,9 +60,12 @@ public class ProxyControllerTest {
     }
   }
 
+  /**
+   * Makes sure that run handles the server closing without throwing an error.
+   */
   @Test
   public void runHandlesClosedSocket() {
-    PrintStream stdErr = System.err;
+    final PrintStream stdErr = System.err;
     System.setErr(viewOutput.toPrintStream());
     try {
       server.close();
@@ -68,6 +77,9 @@ public class ProxyControllerTest {
     System.setErr(stdErr);
   }
 
+  /**
+   * Tests if the appropriate response is given when prompted to join.
+   */
   @Test
   public void testJoin() {
     server.input(emptyRequest("join"));
@@ -80,6 +92,9 @@ public class ProxyControllerTest {
         )), server.getFirstReceived());
   }
 
+  /**
+   * Makes sure a valid setup response is returned to the server.
+   */
   @Test
   public void testSetup() {
     server.input(setupRequest(6, 6, 1, 2, 2, 1));
@@ -95,6 +110,9 @@ public class ProxyControllerTest {
         )), server.getLastReceived());
   }
 
+  /**
+   * Makes sure valid shots are returned to the server.
+   */
   @Test
   public void testTakeShots() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
@@ -111,6 +129,9 @@ public class ProxyControllerTest {
     )), server.getLastReceived());
   }
 
+  /**
+   * Makes sure the controller responds correctly when asked to report damage.
+   */
   @Test
   public void testReportDamage() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
@@ -123,6 +144,9 @@ public class ProxyControllerTest {
     )), server.getLastReceived());
   }
 
+  /**
+   * Makes sure the controller responds correctly when given successful hits.
+   */
   @Test
   public void testSuccessfulHits() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
@@ -133,6 +157,9 @@ public class ProxyControllerTest {
     assertEquals(emptyRequest("successful-hits"), server.getLastReceived());
   }
 
+  /**
+   * Makes sure that the controller handles ending the game when asked.
+   */
   @Test
   public void testEndGame() {
     server.input(setupRequest(6, 6, 1, 1, 1, 1));
@@ -146,10 +173,27 @@ public class ProxyControllerTest {
 
   }
 
+  /**
+   * Helper that makes a new empty request.
+   *
+   * @param methodName the method to create
+   * @return a json containing the empty request
+   */
   private static JsonNode emptyRequest(String methodName) {
     return serializeRecord(new MessageJson(methodName, MAPPER.createObjectNode()));
   }
 
+  /**
+   * Creates a new json request for setup.
+   *
+   * @param width the game width
+   * @param height the game height
+   * @param carriers the number of carriers
+   * @param battleships the number of battleships
+   * @param destroyers the number of destroyers
+   * @param submarines the number of submarines
+   * @return a json containing the setup request
+   */
   private static JsonNode setupRequest(int width, int height, int carriers, int battleships,
                                        int destroyers, int submarines) {
     return serializeRecord(
@@ -166,6 +210,12 @@ public class ProxyControllerTest {
         ));
   }
 
+  /**
+   * Creates the response to a setup request.
+   *
+   * @param ships the list of ships
+   * @return a json containing the list of ships
+   */
   private static JsonNode setupResponse(List<Ship> ships) {
     return serializeRecord(
         new MessageJson("setup",
@@ -173,11 +223,25 @@ public class ProxyControllerTest {
         ));
   }
 
+  /**
+   * Creates the expected response for a volley.
+   *
+   * @param methodName the name of the method
+   * @param coordinates the list of coordinates in the volley
+   * @return a json containing the volley information
+   */
   private static JsonNode volleyMessage(String methodName, List<Coord> coordinates) {
     VolleyJson coords = new VolleyJson(coordinates.stream().map(Coord::toJson).toList());
     return serializeRecord(new MessageJson(methodName, serializeRecord(coords)));
   }
 
+  /**
+   * Creates the message for ending the game.
+   *
+   * @param result who won the game
+   * @param reason the reason for ending
+   * @return a json containing ending information
+   */
   private static JsonNode endGameMessage(GameResult result, String reason) {
     return serializeRecord(
         new MessageJson("end-game",

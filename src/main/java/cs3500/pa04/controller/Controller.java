@@ -7,7 +7,7 @@ public interface Controller {
 
   /**
    * Runs the game.
-   * Stars and controls the game flow.
+   * Starts and controls the game flow.
    */
   void run();
 }
