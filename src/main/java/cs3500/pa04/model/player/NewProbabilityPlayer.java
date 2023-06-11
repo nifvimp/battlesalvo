@@ -6,6 +6,7 @@ import cs3500.pa04.model.Orientation;
 import cs3500.pa04.model.Ship;
 import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,16 @@ import java.util.Set;
  * misses on the opponent board. Accounts for hits in a scuffed way, just multiplying
  * the weight the ship has if it overlaps a hit.
  */
+// 67.93 for 100
+// 71.084 for 10
+// 74.871 for 5
+// 73.032 for 1
+// 78.346 for 2
+// 77.797 for 3
+// 76.093 for 4
+// 78.462 for 2.5
 public class NewProbabilityPlayer extends LocalPlayer {
+  private static final double WEIGHT = 2.5;
   private final Set<Coord> misses;
   private final Set<Coord> hits;
   private int[][] possibleConfigurations;
@@ -88,7 +98,7 @@ public class NewProbabilityPlayer extends LocalPlayer {
       Set<Coord> occupied = ship.getOccupied();
       if (occupied.stream().anyMatch(hits::contains)) {
         for (Coord c : occupied) {
-          weighted[c.y()][c.x()] += 100;
+          weighted[c.y()][c.x()] += WEIGHT;
         }
       }
     }
@@ -125,8 +135,6 @@ public class NewProbabilityPlayer extends LocalPlayer {
     lastTurnShots.clear();
   }
 
-  // TODO: should shoot randomly if probabilities are insignificant
-  //  (when complete sims are in the like 0 - 10 range).
   @Override
   protected List<Coord> loadShots() {
     double[][] probabilityDistribution = new double[height][width];
@@ -150,6 +158,10 @@ public class NewProbabilityPlayer extends LocalPlayer {
 //          .toList());
 //    }
     // shot logic
+    // TODO: start with random checkerboard shots
+
+    // TODO: implement more distributed shooting
+
     List<Coord> shots = new ArrayList<>();
     Set<Coord> validShots = board.validShots();
     Map<Coord, Double> possibleShots = new HashMap<>();

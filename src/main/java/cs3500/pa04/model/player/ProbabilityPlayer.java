@@ -6,6 +6,7 @@ import cs3500.pa04.model.Orientation;
 import cs3500.pa04.model.Ship;
 import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,16 +84,16 @@ public class ProbabilityPlayer extends LocalPlayer {
     for (Thread thread : threads) {
       thread.interrupt();
     }
-//    System.out.println("Attempts: " + runs);
-//    System.out.println("Sims Complete: " + count);
+    System.out.println("Attempts: " + runs);
+    System.out.println("Sims Complete: " + count);
 
-    // prints out probability distribution
-//    for (double[] row : probabilityDistribution) {
-//      row = Arrays.stream(row).map(num -> (num / count) * 100).toArray();
-//      System.out.println(Arrays.stream(row)
-//          .mapToObj(num -> String.format("%3.2f", num))
-//          .toList());
-//    }
+//     prints out probability distribution
+    for (double[] row : probabilityDistribution) {
+      row = Arrays.stream(row).map(num -> (num / count) * 100).toArray();
+      System.out.println(Arrays.stream(row)
+          .mapToObj(num -> String.format("%3.2f", num))
+          .toList());
+    }
   }
 
   /**

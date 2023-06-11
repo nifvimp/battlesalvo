@@ -6,8 +6,12 @@ import cs3500.pa04.controller.ProxyController;
 import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Player;
+import cs3500.pa04.model.player.CheckerLinePlayer;
+import cs3500.pa04.model.player.CheckerStackPlayer;
 import cs3500.pa04.model.player.LinePlayer;
 import cs3500.pa04.model.player.NewProbabilityPlayer;
+import cs3500.pa04.model.player.ProbabilityPlayer;
+import cs3500.pa04.model.player.RandomPlayer;
 import cs3500.pa04.model.player.StackPlayer;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
@@ -28,12 +32,12 @@ import java.util.Random;
  */
 public class Driver {
   private static final boolean LOCAL = true;
-  private static final boolean PRINT = false;
+  private static final boolean PRINT = true;
   private static final Class<?> PLAYER_CLASS = NewProbabilityPlayer.class;
   private static final Class<?> OPPONENT_CLASS = StackPlayer.class;
   private static final String DEFAULT_HOST = "0.0.0.0";
   private static final int DEFAULT_PORT = 35001;
-  private static final int GAMES = 10000;
+  private static final int GAMES = 1;
   private static final Random random = new Random();
   private static Socket socket;
   private static int wins = 0;
@@ -87,7 +91,7 @@ public class Driver {
             e);
       }
       runs++;
-      if (runs % (GAMES / 100) == 0) {
+      if (runs % ((double) GAMES / 100) == 0) {
         System.out.println("Simulations Completed: " + runs);
       }
     }
