@@ -6,7 +6,6 @@ import cs3500.pa04.model.Orientation;
 import cs3500.pa04.model.Ship;
 import cs3500.pa04.model.ShipType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,16 +83,16 @@ public class ProbabilityPlayer extends LocalPlayer {
     for (Thread thread : threads) {
       thread.interrupt();
     }
-    System.out.println("Attempts: " + runs);
-    System.out.println("Sims Complete: " + count);
+//    System.out.println("Attempts: " + runs);
+//    System.out.println("Sims Complete: " + count);
 
     // prints out probability distribution
-    for (double[] row : probabilityDistribution) {
-      row = Arrays.stream(row).map(num -> (num / count) * 100).toArray();
-      System.out.println(Arrays.stream(row)
-          .mapToObj(num -> String.format("%3.2f", num))
-          .toList());
-    }
+//    for (double[] row : probabilityDistribution) {
+//      row = Arrays.stream(row).map(num -> (num / count) * 100).toArray();
+//      System.out.println(Arrays.stream(row)
+//          .mapToObj(num -> String.format("%3.2f", num))
+//          .toList());
+//    }
   }
 
   /**
@@ -102,14 +101,12 @@ public class ProbabilityPlayer extends LocalPlayer {
    * Removes all ship placements that overhang the board or overlap with a miss.
    */
   private void getPossibleShipLocations() {
-    for (ShipType shipType : specifications.keySet()) {
+    for (ShipType shipType : ShipType.values()) {
       List<Ship> possible = new ArrayList<>();
       int size = shipType.getSize();
-      // could make cleaner
       for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
           Coord startingCoord = new Coord(j, i);
-          // TODO: could separate out into helper
           if (i + size <= height) {
             Ship potential = new Ship(shipType, startingCoord, Orientation.VERTICAL);
             if (potential.getOccupied().stream().noneMatch(misses::contains)) {
@@ -144,7 +141,6 @@ public class ProbabilityPlayer extends LocalPlayer {
           conflicts.add(other);
         }
       }
-      conflicts.remove(ship);
       incompatible.put(ship, conflicts);
     }
   }
@@ -222,7 +218,6 @@ public class ProbabilityPlayer extends LocalPlayer {
     return shots;
   }
 
-  // TODO: extract inner class outside
   private class Simulation extends Thread {
     @Override
     public void run() {

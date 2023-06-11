@@ -15,6 +15,7 @@ public class Ship {
   private final boolean[] segmentDamage;
   private final Coord startingCoord;
   private final Orientation orientation;
+  private final Set<Coord> occupied;
   private boolean isSunk;
 
   /**
@@ -30,6 +31,22 @@ public class Ship {
     this.orientation = orientation;
     this.isSunk = false;
     this.type = type;
+    this.occupied = calculateOccupied();
+  }
+
+  /**
+   * Calculates the coords this ships occupies
+   *
+   * @return set of coords this ship occupies
+   */
+  private Set<Coord> calculateOccupied() {
+    Set<Coord> occupied = new HashSet<>();
+    for (int i = 0; i < type.getSize(); i++) {
+      int x = startingCoord.x() + ((orientation == Orientation.VERTICAL) ? 0 : i);
+      int y = startingCoord.y() + ((orientation == Orientation.HORIZONTAL) ? 0 : i);
+      occupied.add(new Coord(x, y));
+    }
+    return occupied;
   }
 
   /**
@@ -92,13 +109,7 @@ public class Ship {
    * @return set of coords this ship occupies
    */
   public Set<Coord> getOccupied() {
-    Set<Coord> occupied = new HashSet<>();
-    for (int i = 0; i < type.getSize(); i++) {
-      int x = startingCoord.x() + ((orientation == Orientation.VERTICAL) ? 0 : i);
-      int y = startingCoord.y() + ((orientation == Orientation.HORIZONTAL) ? 0 : i);
-      occupied.add(new Coord(x, y));
-    }
-    return occupied;
+    return new HashSet<>(occupied);
   }
 
   /**

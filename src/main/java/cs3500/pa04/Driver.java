@@ -7,6 +7,7 @@ import cs3500.pa04.controller.UserCommunicator;
 import cs3500.pa04.model.BoardObserver;
 import cs3500.pa04.model.Player;
 import cs3500.pa04.model.player.LinePlayer;
+import cs3500.pa04.model.player.NewProbabilityPlayer;
 import cs3500.pa04.model.player.StackPlayer;
 import cs3500.pa04.view.GameView;
 import cs3500.pa04.view.TerminalView;
@@ -27,11 +28,12 @@ import java.util.Random;
  */
 public class Driver {
   private static final boolean LOCAL = true;
-  private static final Class<?> PLAYER_CLASS = StackPlayer.class;
-  private static final Class<?> OPPONENT_CLASS = LinePlayer.class;
+  private static final boolean PRINT = false;
+  private static final Class<?> PLAYER_CLASS = NewProbabilityPlayer.class;
+  private static final Class<?> OPPONENT_CLASS = StackPlayer.class;
   private static final String DEFAULT_HOST = "0.0.0.0";
   private static final int DEFAULT_PORT = 35001;
-  private static final int GAMES = 1000;
+  private static final int GAMES = 10000;
   private static final Random random = new Random();
   private static Socket socket;
   private static int wins = 0;
@@ -67,7 +69,7 @@ public class Driver {
     }
     System.out.println("Player hit rate: " + playerCumulativeHitRate / GAMES);
     System.out.println("Opponent hit rate: " + opponentCumulativeHitRate / GAMES);
-    System.out.println("Win Rate: " + (double) wins / GAMES);
+    System.out.println("Win Rate: " + ((double) wins / GAMES) * 100);
   }
 
   private static class GameSim extends Thread {
@@ -75,9 +77,9 @@ public class Driver {
     public void run() {
       try {
         if (LOCAL) {
-          simulateLocalGame(PLAYER_CLASS, OPPONENT_CLASS, false);
+          simulateLocalGame(PLAYER_CLASS, OPPONENT_CLASS, PRINT);
         } else {
-          simulateServerGame(PLAYER_CLASS, socket, false);
+          simulateServerGame(PLAYER_CLASS, socket, PRINT);
         }
       } catch (NoSuchMethodException | IOException | IllegalAccessException |
                InstantiationException | InvocationTargetException e) {
