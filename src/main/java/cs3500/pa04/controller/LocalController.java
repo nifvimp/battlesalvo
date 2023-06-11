@@ -57,8 +57,8 @@ public class LocalController implements Controller {
   }
 
   @Override
-  public double[] run(int temp) {
-    return null;
+  public boolean run(Object temp) {
+    return false;
   }
 
   /**

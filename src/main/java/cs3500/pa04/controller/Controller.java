@@ -16,5 +16,5 @@ public interface Controller {
    * Stars and controls the game flow.
    */
   @Deprecated
-  double[] run(int temp);
+  boolean run(Object temp);
 }

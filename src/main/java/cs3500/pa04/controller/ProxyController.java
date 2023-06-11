@@ -38,6 +38,7 @@ public class ProxyController implements Controller {
   private final GameView view;
   private final Socket server;
   private final Player player;
+  private boolean won = false;
 
 
   // TODO: don't throw
@@ -73,19 +74,19 @@ public class ProxyController implements Controller {
   }
 
   @Override
-  public double[] run(int temp) {
+  public boolean run(Object temp) {
     try {
       JsonParser parser = MAPPER.getFactory().createParser(this.in);
       while (!this.server.isClosed()) {
         MessageJson message = parser.readValueAs(MessageJson.class);
         delegateMessage(message);
       }
-      return observer.getBoard(player).hitRate();
+      return won;
     } catch (IOException e) {
       e.printStackTrace();
       // Disconnected from server or parsing exception
     }
-    return null;
+    return false;
   }
 
   /**
@@ -179,13 +180,15 @@ public class ProxyController implements Controller {
     this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
     GameResult result = GameResult.valueOf(arguments.get("result").textValue());
     String reason = arguments.get("reason").textValue();
+    if (result == GameResult.WIN) {
+      won = true;
+    }
     view.showResults(result, reason);
     player.endGame(result, reason);
     JsonNode jsonResponse = serializeRecord(
         new MessageJson("end-game", MAPPER.createObjectNode())
     );
     this.out.println(jsonResponse);
-    observer.getBoard(player).hitRate();
     try {
       server.close();
     } catch (IOException e) {

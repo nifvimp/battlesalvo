@@ -17,15 +17,24 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+// TODO: the main issue with the player's logic is that it randomly places ships
+//  blindly, so it wastes a lot of attempts trying to place down ships that have
+//  most likely have already been sunk.
+//  the current best way to improve the AI is to make something that will eliminate
+//  ships from the specifications (subtracting from it), but the challenge is taking
+//  out the right ship. We can tell if we sunk something only after 2 turns of shooting
+//  via the number of shots received. We also somehow have to remove the places where
+//  we think the ship that sunk was from the hits list to keep functionality. probably
+//  should just add them to the miss list.
 public class ProbabilityPlayer extends LocalPlayer {
-  private static final int MILLISECONDS_THREAD_INTERRUPT = 50;
-  private static final int THREADS = 50;
+  private static final int MILLISECONDS_THREAD_INTERRUPT = 1000; // make sure to leave time
+  private static final int THREADS = 50; // the more threads you have, the slower the response is
+  private final Set<Coord> misses;
+  private final Set<Coord> hits;
   private double[][] probabilityDistribution;
   private Map<ShipType, Integer> specifications;
   private Map<ShipType, List<Ship>> shipLocations;
   private Map<Ship, Set<Ship>> incompatible;
-  private final Set<Coord> misses;
-  private final Set<Coord> hits;
   private Random random;
   private long count;
   private int runs;
@@ -50,6 +59,7 @@ public class ProbabilityPlayer extends LocalPlayer {
   }
 
   private void calculateDistribution() {
+    // this pre-logic computation is important for decent multi-threading time
     this.probabilityDistribution = new double[height][width];
     this.shipLocations = new HashMap<>();
     this.incompatible = new HashMap<>();
@@ -57,12 +67,15 @@ public class ProbabilityPlayer extends LocalPlayer {
     getPossibleShipLocations();
     getIncompatibleLocations();
 
+    // where the multi-threading starts
     List<Thread> threads = new ArrayList<>();
     for (int i = 0; i < THREADS; i++) {
       Thread thread = new Simulation();
       thread.start();
       threads.add(thread);
     }
+    // waits a certain amount of time before stopping all threads
+    // it takes a while to actually stop all the threads, so leave sufficient leftover time
     try {
       TimeUnit.MILLISECONDS.sleep(MILLISECONDS_THREAD_INTERRUPT);
     } catch (InterruptedException ignored) {
@@ -73,9 +86,8 @@ public class ProbabilityPlayer extends LocalPlayer {
     }
     System.out.println("Attempts: " + runs);
     System.out.println("Sims Complete: " + count);
-//    for (int i = 0; i < SIMULATION_ATTEMPTS; i++) {
-//      simulateShipPlacement();
-//    }
+
+    // prints out probability distribution
     for (double[] row : probabilityDistribution) {
       row = Arrays.stream(row).map(num -> (num / count) * 100).toArray();
       System.out.println(Arrays.stream(row)
@@ -84,13 +96,20 @@ public class ProbabilityPlayer extends LocalPlayer {
     }
   }
 
+  /**
+   * Computes all the possible ship placements that can be made on the opponent board given
+   * the current information available.
+   * Removes all ship placements that overhang the board or overlap with a miss.
+   */
   private void getPossibleShipLocations() {
     for (ShipType shipType : specifications.keySet()) {
       List<Ship> possible = new ArrayList<>();
       int size = shipType.getSize();
+      // could make cleaner
       for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
           Coord startingCoord = new Coord(j, i);
+          // TODO: could separate out into helper
           if (i + size <= height) {
             Ship potential = new Ship(shipType, startingCoord, Orientation.VERTICAL);
             if (potential.getOccupied().stream().noneMatch(misses::contains)) {
@@ -109,6 +128,9 @@ public class ProbabilityPlayer extends LocalPlayer {
     }
   }
 
+  /**
+   * Computes the list of conflicting ship placements for each valid ship placement.
+   */
   private void getIncompatibleLocations() {
     List<Ship> ships = new ArrayList<>();
     for (List<Ship> possible : shipLocations.values()) {
@@ -127,24 +149,13 @@ public class ProbabilityPlayer extends LocalPlayer {
     }
   }
 
-  // TODO: extract inner class outside
-  private class Simulation extends Thread {
-    @Override
-    public void run() {
-      while(!this.isInterrupted()) {
-        try {
-          simulateShipPlacement();
-          runs++;
-        } catch (NullPointerException ignored) {
-          // An empty catch block
-        }
-      }
-    }
-  }
-
+  /**
+   * Simulates the random placement of ships on a board and logs the placements if the randomly
+   * made placements match a possibility of what the opponent player's board could be.
+   */
   private void simulateShipPlacement() {
     List<Ship> placed = new ArrayList<>();
-    for (ShipType shipType : specifications.keySet()) {
+    for (ShipType shipType : ShipType.values()) {
       for (int i = 0; i < specifications.get(shipType); i++) {
         List<Ship> possible = shipLocations.get(shipType);
         Ship toPlace = possible.get(random.nextInt(0, possible.size()));
@@ -191,6 +202,8 @@ public class ProbabilityPlayer extends LocalPlayer {
     return super.takeShots();
   }
 
+  // TODO: should shoot randomly if probabilities are insignificant
+  //  (when complete sims are in the like 0 - 10 range).
   @Override
   protected List<Coord> loadShots() {
     List<Coord> shots = new ArrayList<>();
@@ -207,5 +220,16 @@ public class ProbabilityPlayer extends LocalPlayer {
       shots.add(queue.poll());
     }
     return shots;
+  }
+
+  // TODO: extract inner class outside
+  private class Simulation extends Thread {
+    @Override
+    public void run() {
+      while (!this.isInterrupted()) {
+        runs++;
+        simulateShipPlacement();
+      }
+    }
   }
 }
