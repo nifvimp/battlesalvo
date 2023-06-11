@@ -11,6 +11,7 @@ import java.util.Stack;
 public class ArtificialPlayer extends LocalPlayer {
   private final Stack<Coord> shotStack = new Stack<>();
   private final Random random;
+
   /**
    * Constructor for AiPlayer, with a given seed.
    *

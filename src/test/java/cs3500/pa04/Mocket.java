@@ -15,7 +15,7 @@ import java.util.List;
  * A mock socket. Only deals with Jsons.
  */
 public class Mocket extends Socket {
-  private final static ObjectMapper MAPPER = new ObjectMapper();
+  private static final ObjectMapper MAPPER = new ObjectMapper();
   private final MockInputStream in;
   private final MockOutputStream out;
 

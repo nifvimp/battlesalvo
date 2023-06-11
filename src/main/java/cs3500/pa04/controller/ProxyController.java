@@ -56,6 +56,10 @@ public class ProxyController implements Controller {
     this.view = view;
   }
 
+  /**
+   * Runs the game.
+   * Starts and controls the game flow.
+   */
   @Override
   public void run() {
     try {
@@ -90,6 +94,9 @@ public class ProxyController implements Controller {
     }
   }
 
+  /**
+   * Handles joining the server.
+   */
   private void handleJoin() {
     MessageJson response = new MessageJson(
         "join", MAPPER.createObjectNode()
@@ -101,6 +108,11 @@ public class ProxyController implements Controller {
     this.out.println(jsonResponse);
   }
 
+  /**
+   * Handles setting up the game.
+   *
+   * @param arguments the json containing game information
+   */
   private void handleSetup(JsonNode arguments) {
     int width = arguments.get("width").asInt();
     int height = arguments.get("height").asInt();
@@ -118,6 +130,9 @@ public class ProxyController implements Controller {
     this.out.println(jsonResponse);
   }
 
+  /**
+   * Gets shots from the user.
+   */
   private void handleTakeShots() {
     this.view.displayOpponentBoard(observer.getBoard(player).getOpponentKnowledge());
     this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
@@ -130,6 +145,11 @@ public class ProxyController implements Controller {
     this.out.println(jsonResponse);
   }
 
+  /**
+   * Reports which of the opponent's shots hit.
+   *
+   * @param arguments Json containing the shots
+   */
   private void handleReportDamage(JsonNode arguments) {
     List<Coord> shots = new ArrayList<>();
     for (JsonNode node : arguments.get("coordinates")) {
@@ -144,6 +164,11 @@ public class ProxyController implements Controller {
     this.out.println(jsonResponse);
   }
 
+  /**
+   * Tells the player which of their shots hit.
+   *
+   * @param arguments Json containing the shots
+   */
   private void handleSuccessfulHits(JsonNode arguments) {
     List<Coord> shots = new ArrayList<>();
     for (JsonNode node : arguments.get("coordinates")) {
@@ -156,6 +181,11 @@ public class ProxyController implements Controller {
     this.out.println(jsonResponse);
   }
 
+  /**
+   * Tells the player to end the game and why.
+   *
+   * @param arguments Json containing who won and the reason.
+   */
   private void endGame(JsonNode arguments) {
     this.view.displayOpponentBoard(observer.getBoard(player).getOpponentKnowledge());
     this.view.displayPlayerBoard(observer.getBoard(player).getPlayerBoard());
